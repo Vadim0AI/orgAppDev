@@ -18,7 +18,7 @@ def checking_enough_time():
     # Выполнение SQL-запроса для выборки данных.
     #   Выбираем расписание на сегодня (оно должно быть одно в начале дня).
     cur.execute('''
-        SELECT compiled_by
+        SELECT enough_time
         FROM days
         WHERE date = ?
         ''', (today,))

@@ -8,6 +8,9 @@ from check_availability_day import check_availability_day
 from checking_enough_time import checking_enough_time
 from where_now_wb import where_now_wb
 import threading
+from src.organizer.kivi_interface.wb_timer import CountdownTimer
+from src.organizer.kivi_interface.new_wb import NewWB
+import shutil
 
 
 # Запуск защитных модулей, скриптов и проверок ...
@@ -16,6 +19,7 @@ import threading
 path_to_now = r'C:\Code\orgApp Dev\resources\now'
 path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
 path_to_future = r'C:\Code\orgApp Dev\resources\future'
+db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
 
 # --- При запуске orgApp --- :
 # Переместить все файлы Day из папки now в папку history
@@ -31,20 +35,23 @@ file_exists = check_availability_day(name_day, path_to_future)
 #       сегодня (по умолчанию - 10 мин);
 enough_time: bool = (checking_enough_time() == 10)
 
-# Проверяем режим ограниченной функциональности (только составления расписания)
+# Проверяем режим ограниченной функциональности (только составление расписания)
 restriction_mode: bool = not (file_exists and enough_time)
 if restriction_mode:
     # TODO: Здесь описать действия в случае режима ограниченной
     #   функциональности
+    print('Режим ограниченной функциональности')
     pass
 
-# Парсим расписание на день
-db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
-path_day = r'C:\Code\orgApp Dev\resources\now\Day.xlsx'
+# Перемещаем нужный файл Day из папки future в папку now
+path_d_future: str = path_to_future + '\\' + name_day
+path_d_now: str = path_to_now + '\\' + name_day
+shutil.move(path_d_future, path_d_now)
+
 # TODO: Нужно сначала получить этот id_days на основе последнего
 #  существующего id_days
 id_days = 1
-day_ab = parse_table(path_day)
+day_ab = parse_table(path_d_now)
 print(day_ab)
 # Трансформируем список с расписанием по АБ в формат РБ и помещаем его в
 #   таблицу БД "day_wb"
@@ -73,7 +80,7 @@ while True:
     wb_title = wb_row[3]
     # Определяем объект таймера и запускаем его в отдельном потоке
     timer_app = CountdownTimer(dur_min_sec, wb_title)
-    timer_thread = threading.Thread(target=timer_app.run())
+    timer_thread = threading.Thread(target=timer_app.mainloop())
     timer_thread.start()
 
     # После завершения таймера - окно подтверждения окончания РБ ...

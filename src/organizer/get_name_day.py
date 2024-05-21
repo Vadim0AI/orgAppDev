@@ -18,7 +18,7 @@ def get_name_day(date='today'):
     day_name = today.strftime('%a')
 
     # Форматируем дату в строку 'Day_dd_mm_wd'
-    name_day = f'Day_{today.strftime("%d_%m")}_{day_name}'
+    name_day = f'Day_{today.strftime("%d_%m")}_{day_name}.xlsx'
 
     return name_day
 
