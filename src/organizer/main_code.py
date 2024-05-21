@@ -11,6 +11,8 @@ import threading
 from src.organizer.kivi_interface.wb_timer import CountdownTimer
 from src.organizer.kivi_interface.new_wb import NewWB
 import shutil
+from first_launch import first_launch
+
 
 
 # Запуск защитных модулей, скриптов и проверок ...
@@ -21,32 +23,20 @@ path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
 path_to_future = r'C:\Code\orgApp Dev\resources\future'
 db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
 
-# --- При запуске orgApp --- :
-# Переместить все файлы Day из папки now в папку history
-move_to_history(path_to_now, path_to_history)
-
-# Проверяем факт режима ограниченной функциональности
 #   Определить текущее название для файла Day исходя из текущей даты
 name_day = get_name_day(date='today')
-# Проверить наличие файла Day с таким названием в папке future
-file_exists = check_availability_day(name_day, path_to_future)
 
-#   Было ли вчера уделено достаточно времени на составление расписание на
-#       сегодня (по умолчанию - 10 мин);
-enough_time: bool = (checking_enough_time() == 10)
-
-# Проверяем режим ограниченной функциональности (только составление расписания)
-restriction_mode: bool = not (file_exists and enough_time)
-if restriction_mode:
-    # TODO: Здесь описать действия в случае режима ограниченной
-    #   функциональности
-    print('Режим ограниченной функциональности')
-    pass
-
-# Перемещаем нужный файл Day из папки future в папку now
 path_d_future: str = path_to_future + '\\' + name_day
 path_d_now: str = path_to_now + '\\' + name_day
-shutil.move(path_d_future, path_d_now)
+
+first_launch(path_to_history, path_to_now, path_to_future, path_d_future,
+             path_d_now, name_day)
+
+
+
+
+
+
 
 # TODO: Нужно сначала получить этот id_days на основе последнего
 #  существующего id_days

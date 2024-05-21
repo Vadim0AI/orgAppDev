@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 
-def where_now_wb(id_day):
+def where_now_wb(id_days):
     """ Определяет какой сейчас РБ и возвращает данные по нему из БД
 
     id_day (int): уникальный идентификатор расписания по которому делает
@@ -21,7 +21,7 @@ def where_now_wb(id_day):
     cursor = conn.cursor()
     # -- Выполняем SQL-запрос для выборки данных
     cursor.execute('SELECT * FROM day_wb WHERE id_days = ? ORDER BY number '
-                   'ASC', id_day)
+                   'ASC', (id_days,))
     # -- Получаем расписание в виде отсортированного списка кортежей
     day_schedule = cursor.fetchall()
 
@@ -30,8 +30,6 @@ def where_now_wb(id_day):
     now_time = ((now_time.hour * 60) + now_time.minute) * 60
 
     # Найти соответсвующий РБ в списке;
-
-
     for wb_row in day_schedule:
         # если wb sleep
         if wb_row[3] == 'sleep':

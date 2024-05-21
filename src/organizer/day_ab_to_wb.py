@@ -37,7 +37,7 @@ def calc_duration(day_wb: list) -> list:
     for wb in day_wb:
         next_number_wb = number_wb + 1
         # Защита от выхода за пределы списка day_wb
-        if next_number_wb > len(day_wb):
+        if next_number_wb < len(day_wb):
             # Время начала текущего РБ
             start = wb[0]
             # Время начала следующего РБ
@@ -46,7 +46,7 @@ def calc_duration(day_wb: list) -> list:
         else:
             duration = 'sleep'
         wb.append(duration)
-        wb.insetr(0, number_wb)
+        wb.insert(0, number_wb)
         number_wb += 1
     day_wb_duration: list = day_wb
     return day_wb_duration
@@ -61,7 +61,7 @@ def day_wb_in_db(db: str, id_days: int, day_ab):
     for row in day_wb:
         row = tuple([id_days] + row)
         cursor.execute(
-            '''INSERT INTO day_detailed 
+            '''INSERT INTO day_wb 
             (id_days, number, wb, wb_title, fact, fix, duration) 
             VALUES (?, ?, ?, ?, ?, ?, ?)''',
             row)
