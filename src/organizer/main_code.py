@@ -1,6 +1,5 @@
-from src.organizer.kivi_interface.wb_timer import CountdownTimer
+from src.organizer.interface.wb_timer import CountdownTimer
 from parse_table import parse_table
-from day_ab_to_wb import day_wb_in_db
 from where_now_ab import where_now_ab
 from move_to_history import move_to_history
 from get_name_day import get_name_day
@@ -8,10 +7,11 @@ from check_availability_day import check_availability_day
 from checking_enough_time import checking_enough_time
 from where_now_wb import where_now_wb
 import threading
-from src.organizer.kivi_interface.wb_timer import CountdownTimer
-from src.organizer.kivi_interface.new_wb import NewWB
+from src.organizer.interface.wb_timer import CountdownTimer
+from src.organizer.interface.new_wb import NewWB
 import shutil
 from first_launch import first_launch
+from loading_schedule import loading_schedule
 
 
 
@@ -29,31 +29,30 @@ name_day = get_name_day(date='today')
 path_d_future: str = path_to_future + '\\' + name_day
 path_d_now: str = path_to_now + '\\' + name_day
 
-first_launch(path_to_history, path_to_now, path_to_future, path_d_future,
-             path_d_now, name_day)
-
-
-
-
-
-
+# Перемещаем старые расписания в папку history. Перемещаем расписание
+#     на сегодня из now в папку future. Проверяем, нужно ли включить режим
+#     ограниченной функциональности.
+# first_launch(path_to_history, path_to_now, path_to_future, path_d_future,
+#              path_d_now, name_day)
 
 # TODO: Нужно сначала получить этот id_days на основе последнего
 #  существующего id_days
-id_days = 1
-day_ab = parse_table(path_d_now)
-print(day_ab)
-# Трансформируем список с расписанием по АБ в формат РБ и помещаем его в
-#   таблицу БД "day_wb"
-day_wb_in_db(db, id_days, day_ab)
 # TODO: В случае первой записи расписания на день, нужно также добавлять
 #  строку в таблицу базы данных "days". id_days, date, version, time_change
+id_days = 1
+
+loading_schedule(db, id_days, path_d_now)
+
+
+
+
 
 # Запускаем цикл РБ ...
 while True:
     # Произвожу поиск текущего РБ в таблице БД "day_wb",
     #   отсеивая по id_days ...
     now_wb = where_now_wb(id_days)
+    print(now_wb)
     if now_wb == 'sleep':
         pass # TODO: дописать - что делать, если время sleep ...
     wb_row, delta_sec = now_wb

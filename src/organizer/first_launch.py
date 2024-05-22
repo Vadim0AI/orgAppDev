@@ -8,7 +8,9 @@ import shutil
 def first_launch(path_to_history, path_to_now, path_to_future,
                  path_d_future, path_d_now, name_day):
     """ Перемещает старые расписания в папку history. Перемещает расписание
-    на сегодня из now в папку future. """
+    на сегодня из now в папку future. Проверяет, нужно ли включить режим
+    ограниченной функциональности. """
+
     # Переместить все файлы Day из папки now в папку history
     move_to_history(path_to_now, path_to_history)
     # Проверяем факт режима ограниченной функциональности

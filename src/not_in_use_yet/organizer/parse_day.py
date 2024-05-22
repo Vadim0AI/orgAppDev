@@ -15,7 +15,7 @@ from parse_table import parse_table
 
 
 def parse_day(db: str, path_day: str, id_days: int):
-    """ Парсит расписание Day_21_05_Tue.xlsx и помещает его в БД
+    """ Парсит расписание Day_22_05_Wed.xlsx и помещает его в БД
 
     path_day (str) : путь к файлу, который хотим спарсить.
     db (str) : путь к БД в которую хотим поместить расписание.

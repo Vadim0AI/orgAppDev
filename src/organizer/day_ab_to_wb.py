@@ -63,7 +63,6 @@ def day_wb_in_db(db: str, id_days: int, day_ab):
         cursor.execute(
             '''INSERT INTO day_wb 
             (id_days, number, wb, wb_title, fact, fix, duration) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)''',
-            row)
+            VALUES (?, ?, ?, ?, ?, ?, ?)''', row)
     # Сохраняем изменения
     conn.commit()

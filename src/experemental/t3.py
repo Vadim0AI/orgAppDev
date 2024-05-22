@@ -1,4 +1,4 @@
-from src.organizer.kivi_interface.new_wb import NewWB
+from src.organizer.interface.new_wb import NewWB
 
 app = NewWB('00:05', '1')
 app.mainloop()
