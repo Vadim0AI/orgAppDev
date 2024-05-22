@@ -31,11 +31,13 @@ def where_now_wb(id_days):
 
     # Найти соответсвующий РБ в списке;
     for wb_row in day_schedule:
+        print('------------------')
         # если wb sleep
         if wb_row[3] == 'sleep':
             return 'sleep'
         # Иначе, извлечь wb
         wb = wb_row[2]
+        print('wb:', wb)
         # Преобразовать wb в datetime объект
         wb = datetime.strptime(wb, "%H:%M")
         # Получаем время начала wb в секундах (часы тоже превращаем в секунды)
@@ -48,7 +50,7 @@ def where_now_wb(id_days):
         duration = datetime.strptime(duration, "%H:%M")
         print('duration.hour:', duration.hour)
         print('duration.minute:', duration.minute)
-        wb_to = ((duration.hour * 3600) + duration.minute * 60)
+        wb_to = wb_from + ((duration.hour * 3600) + duration.minute * 60)
         print('wb_to:', wb_to)
         # Проверить на основе wb и duration, входит ли настоящее время в
         #   этот диапазон
