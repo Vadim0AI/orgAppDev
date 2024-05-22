@@ -41,11 +41,8 @@ path_d_now: str = path_to_now + '\\' + name_day
 #  строку в таблицу базы данных "days". id_days, date, version, time_change
 id_days = 1
 
-loading_schedule(db, id_days, path_d_now)
-
-
-
-
+# Парсим расписание на день из excel и помещает в БД.
+# loading_schedule(db, id_days, path_d_now)
 
 # Запускаем цикл РБ ...
 while True:

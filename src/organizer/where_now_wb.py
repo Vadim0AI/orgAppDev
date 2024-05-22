@@ -42,17 +42,23 @@ def where_now_wb(id_days):
         # + 1 секунда в конце, для того, чтобы отличать начало нового РБ и
             # окончание другого
         wb_from = (((wb.hour * 60) + wb.minute) * 60) + 1
+        print('wb_from: ', wb_from)
         # Преобразуем duration в секунды - получаем время окончания wb
         duration = wb_row[6] # формат: 'hh:mm'
         duration = datetime.strptime(duration, "%H:%M")
-        wb_to = ((duration.hour * 60) + duration.minute) * 60
+        print('duration.hour:', duration.hour)
+        print('duration.minute:', duration.minute)
+        wb_to = ((duration.hour * 3600) + duration.minute * 60)
+        print('wb_to:', wb_to)
         # Проверить на основе wb и duration, входит ли настоящее время в
         #   этот диапазон
-        if wb_from <= now_time <= wb_to:
+        if wb_from <= now_time and now_time <= wb_to:
             # Вычислить delta_sec для вывода количества секунд до следующего РБ
             delta_sec = wb_to - now_time
+            print(delta_sec)
             return wb_row, delta_sec
+
 
 if __name__ == '__main__':
     wb = where_now_wb(1)
-    print(wb)
+    print('result: ', wb)

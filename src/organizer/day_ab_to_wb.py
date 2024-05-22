@@ -44,7 +44,9 @@ def calc_duration(day_wb: list) -> list:
             end = day_wb[next_number_wb][0]
             duration = time_difference(start, end)
         else:
-            duration = 'sleep'
+            start = wb[0]
+            end = '24:00'
+            duration = time_difference(start, end)
         wb.append(duration)
         wb.insert(0, number_wb)
         number_wb += 1
