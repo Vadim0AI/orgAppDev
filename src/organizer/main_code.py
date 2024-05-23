@@ -1,3 +1,5 @@
+import time
+
 from src.organizer.interface.wb_timer import CountdownTimer
 from parse_table import parse_table
 from where_now_ab import where_now_ab
@@ -44,12 +46,18 @@ id_days = 1
 # Парсим расписание на день из excel и помещает в БД.
 # loading_schedule(db, id_days, path_d_now)
 
+
+def run_timer(dur_min_sec, wb_title):
+    timer_app = CountdownTimer(dur_min_sec, wb_title)
+    timer_app.mainloop()
+
+
+
 # Запускаем цикл РБ ...
 while True:
     # Произвожу поиск текущего РБ в таблице БД "day_wb",
     #   отсеивая по id_days ...
     now_wb = where_now_wb(id_days)
-    print(now_wb)
     if now_wb == 'sleep':
         pass # TODO: дописать - что делать, если время sleep ...
     wb_row, delta_sec = now_wb
@@ -64,11 +72,12 @@ while True:
     # Чтобы запустить таймер, нужно получить общее время для отсчета и title
     #   задачи РБ
     wb_title = wb_row[3]
+    print(1)
     # Определяем объект таймера и запускаем его в отдельном потоке
-    timer_app = CountdownTimer(dur_min_sec, wb_title)
-    timer_thread = threading.Thread(target=timer_app.mainloop())
+    timer_thread = threading.Thread(target=run_timer, args=(dur_min_sec,
+                                                            wb_title))
     timer_thread.start()
-
+    time.sleep(delta_sec + 1)
     # После завершения таймера - окно подтверждения окончания РБ ...
     # Дописать меню для orgApp ...
     # Выключение ПК в случае РБ "sleep"
