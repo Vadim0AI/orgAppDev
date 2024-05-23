@@ -47,10 +47,20 @@ id_days = 1
 # loading_schedule(db, id_days, path_d_now)
 
 
-def run_timer(dur_min_sec, wb_title):
-    timer_app = CountdownTimer(dur_min_sec, wb_title)
-    timer_app.mainloop()
+stop_timer = False
+stop_new_wb = False
 
+
+def run_wb(dur_min_sec, wb_title):
+    while not stop_timer:
+        timer_wb = CountdownTimer(dur_min_sec, wb_title)
+        timer_wb.mainloop()
+
+
+def new_wb(wb_title):
+    while not stop_new_wb:
+        timer_new_wb = NewWB('2:00', wb_title)
+        timer_new_wb.mainloop()
 
 
 # Запускаем цикл РБ ...
@@ -59,7 +69,7 @@ while True:
     #   отсеивая по id_days ...
     now_wb = where_now_wb(id_days)
     if now_wb == 'sleep':
-        pass # TODO: дописать - что делать, если время sleep ...
+        pass  # TODO: дописать - что делать, если время sleep ...
     wb_row, delta_sec = now_wb
 
     #   Для этого нужно получить: длительность РБ
@@ -73,11 +83,22 @@ while True:
     #   задачи РБ
     wb_title = wb_row[3]
     print(1)
+
+
     # Определяем объект таймера и запускаем его в отдельном потоке
-    timer_thread = threading.Thread(target=run_timer, args=(dur_min_sec,
-                                                            wb_title))
-    timer_thread.start()
+    stop_timer = False
+    wb_thread = threading.Thread(target=run_wb, args=(dur_min_sec, wb_title))
+    wb_thread.start()
+
     time.sleep(delta_sec + 1)
+
+    # При завершении РБ вызываем таймер newWB и останавливаем поток с таймером
+    new_wb_thread = threading.Thread(target=new_wb, args=wb_title)
+    new_wb_thread.start()
+    while not wb_thread.isAlive():
+        stop_timer = True
+
+
     # После завершения таймера - окно подтверждения окончания РБ ...
     # Дописать меню для orgApp ...
     # Выключение ПК в случае РБ "sleep"
