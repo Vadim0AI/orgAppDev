@@ -92,11 +92,14 @@ while True:
 
     time.sleep(delta_sec + 1)
 
+
     # При завершении РБ вызываем таймер newWB и останавливаем поток с таймером
+
     new_wb_thread = threading.Thread(target=new_wb, args=wb_title)
     new_wb_thread.start()
+    stop_timer = True
     while not wb_thread.isAlive():
-        stop_timer = True
+        time.sleep(0.1)
 
 
     # После завершения таймера - окно подтверждения окончания РБ ...
