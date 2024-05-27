@@ -84,6 +84,7 @@ class CountdownTimer(tk.Tk):
         self.timer_event = self.after(1000, self.update_timer)
         self.set_window_position()
 
+
     def set_window_position(self):
         self.update_idletasks()
         self.set_always_on_top()
@@ -193,7 +194,24 @@ class CountdownTimer(tk.Tk):
     def stop(self):
         self.destroy()
 
+
+# def run_wb_v1(sec_close: int, dur_min_sec: str, wb_title: str):
+#     def close_app():
+#         root.destroy()
+#
+#     # Создание окна таймера
+#     root = CountdownTimer(dur_min_sec, wb_title)
+#
+#     # Закрытие приложения через sec_close секунд
+#     sec_close *= 1000
+#     root.after(int(sec_close), close_app)
+#
+#     # Запуск главного цикла обработки событий
+#     root.mainloop()
+
+
 if __name__ == '__main__':
-    app = CountdownTimer('01:10', 'orgApp')
-    # app.attributes('-alpha', 0.75)
+    app = CountdownTimer('01:00', 'orgApp')
     app.mainloop()
+    # app.destroy()
+    # run_wb(10, '01:00', 'orgApp')

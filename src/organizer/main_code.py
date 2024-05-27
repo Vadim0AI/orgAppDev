@@ -1,6 +1,5 @@
 import time
 
-from src.organizer.interface.wb_timer import CountdownTimer
 from parse_table import parse_table
 from where_now_ab import where_now_ab
 from move_to_history import move_to_history
@@ -14,6 +13,11 @@ from src.organizer.interface.new_wb import NewWB
 import shutil
 from first_launch import first_launch
 from loading_schedule import loading_schedule
+
+
+def run_wb(wb_root):
+    wb_root.mainloop()
+
 
 
 
@@ -51,18 +55,6 @@ stop_timer = False
 stop_new_wb = False
 
 
-def run_wb(dur_min_sec, wb_title):
-    while not stop_timer:
-        timer_wb = CountdownTimer(dur_min_sec, wb_title)
-        timer_wb.mainloop()
-
-
-def new_wb(wb_title):
-    while not stop_new_wb:
-        timer_new_wb = NewWB('2:00', wb_title)
-        timer_new_wb.mainloop()
-
-
 # Запускаем цикл РБ ...
 while True:
     # Произвожу поиск текущего РБ в таблице БД "day_wb",
@@ -85,22 +77,29 @@ while True:
     print(1)
 
 
-    # Определяем объект таймера и запускаем его в отдельном потоке
-    stop_timer = False
-    wb_thread = threading.Thread(target=run_wb, args=(dur_min_sec, wb_title))
-    wb_thread.start()
+    # Определяем объект таймера РБ и запускаем его
+    # run_wb(delta_sec, dur_min_sec, wb_title)
+    # run_wb(10, dur_min_sec, wb_title)
 
-    time.sleep(delta_sec + 1)
+    wb_root = CountdownTimer('01:00', 'orgApp')
+    # TODO: !!! Почему-то при таком запуске на месте окна таймера просто
+    #  черный экран !!!
+    thread_wb = threading.Thread(target=run_wb, args=(delta_sec,
+                                                      dur_min_sec, wb_title))
+    
+    print(2)
+    # time.sleep(delta_sec)
+    time.sleep(10)
 
+    print(3)
+    # run_wb()
+    # Если таймер еще не закрылся - закрываем принудительно
+    if wb_root:
+        wb_root.destroy()
 
-    # При завершении РБ вызываем таймер newWB и останавливаем поток с таймером
-
-    new_wb_thread = threading.Thread(target=new_wb, args=wb_title)
-    new_wb_thread.start()
-    stop_timer = True
-    while not wb_thread.isAlive():
-        time.sleep(0.1)
-
+    # print(3)
+    # thread_wb = threading.Thread(target=run_wb, args=(delta_sec, dur_min_sec,
+    #                                                   wb_title))
 
     # После завершения таймера - окно подтверждения окончания РБ ...
     # Дописать меню для orgApp ...
