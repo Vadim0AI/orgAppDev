@@ -10,7 +10,3 @@ def parse_table(path_to_xlsx: str) -> list:
     # Преобразование данных DataFrame в список списков
     data_list = df.values.tolist()
     return data_list
-
-path_to_xlsx = r'C:\Code\orgApp Dev\resources\templates\Day.xlsx'
-table = parse_table(path_to_xlsx)
-print(table)

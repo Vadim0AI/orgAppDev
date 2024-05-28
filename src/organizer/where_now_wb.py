@@ -52,8 +52,3 @@ def where_now_wb(id_days):
             # Вычислить delta_sec для вывода количества секунд до следующего РБ
             delta_sec = wb_to - now_time
             return wb_row, delta_sec
-
-
-if __name__ == '__main__':
-    wb = where_now_wb(1)
-    print('result: ', wb)

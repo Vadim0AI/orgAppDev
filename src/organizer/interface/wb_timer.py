@@ -195,23 +195,13 @@ class CountdownTimer(tk.Tk):
         self.destroy()
 
 
-# def run_wb_v1(sec_close: int, dur_min_sec: str, wb_title: str):
-#     def close_app():
-#         root.destroy()
-#
-#     # Создание окна таймера
-#     root = CountdownTimer(dur_min_sec, wb_title)
-#
-#     # Закрытие приложения через sec_close секунд
-#     sec_close *= 1000
-#     root.after(int(sec_close), close_app)
-#
-#     # Запуск главного цикла обработки событий
-#     root.mainloop()
+def run_wb(dur_min_sec, wb_title):
+    wb_root = CountdownTimer(dur_min_sec, wb_title)
+    wb_root.mainloop()
 
 
-if __name__ == '__main__':
-    app = CountdownTimer('01:00', 'orgApp')
-    app.mainloop()
-    # app.destroy()
-    # run_wb(10, '01:00', 'orgApp')
+# if __name__ == '__main__':
+#     app = CountdownTimer('01:00', 'orgApp')
+#     app.mainloop()
+#     # app.destroy()
+#     # run_wb(10, '01:00', 'orgApp')
