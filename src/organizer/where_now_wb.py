@@ -27,7 +27,7 @@ def where_now_wb(id_days):
 
     # Получить текущее время в секундах;
     now_time = datetime.now()
-    now_time = ((now_time.hour * 60) + now_time.minute) * 60
+    now_time = ((now_time.hour * 60) + now_time.minute) * 60 + now_time.second
 
     # Найти соответсвующий РБ в списке;
     for wb_row in day_schedule:
