@@ -89,7 +89,7 @@ class CountdownTimer(tk.Tk):
         self.update_idletasks()
         self.set_always_on_top()
         self.is_fixed = True
-        self.geometry(f"+1354+792")
+        self.geometry(f"-2-32")
 
     def update_timer(self):
         self.time_remaining -= 1
@@ -200,8 +200,8 @@ def run_wb(dur_min_sec, wb_title):
     wb_root.mainloop()
 
 
-# if __name__ == '__main__':
-#     app = CountdownTimer('01:00', 'orgApp')
-#     app.mainloop()
+if __name__ == '__main__':
+    app = CountdownTimer('01:00', 'orgApp')
+    app.mainloop()
 #     # app.destroy()
 #     # run_wb(10, '01:00', 'orgApp')

@@ -75,7 +75,14 @@ class NewWB(tk.Tk):
         self.update_idletasks()
         self.set_always_on_top()
         self.is_fixed = True
-        self.geometry(f"+650+350")
+        # Получаем ширину и высоту экрана
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        # Вычисляем координаты для центрирования окна
+        x = (screen_width - 180) // 2
+        y = (screen_height - 40) // 2
+        # Устанавливаем размер и положение окна по центру экрана
+        self.geometry(f"180x40+{x}+{y}")
 
 
     def update_timer(self):
