@@ -9,6 +9,7 @@ from src.organizer.interface.new_wb import NewWB
 from first_launch import first_launch
 from loading_schedule import loading_schedule
 from src.organizer.run_wb_timer import run_wb_timer
+from src.organizer.run_new_wb import run_new_wb
 
 
 # TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
@@ -56,7 +57,7 @@ if __name__ == '__main__':
     stop_new_wb = False
 
     # Производим первый запуск РБ
-    process_timer_rb, delta_sec = run_wb_timer(id_days)
+    process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
     # Ждем, пока не закончится РБ
     time.sleep(delta_sec)
 
@@ -68,10 +69,14 @@ if __name__ == '__main__':
             process_timer_rb.kill()
             time.sleep(2)
 
-            # Запускаем следующий РБ
-            process_timer_rb, delta_sec = run_wb_timer(id_days)
+            # TODO: Написать действия при нажатии кнопки Next (closed, open,
+            #  blocked)
             # Запускаем таймер new РБ
-            pass #  !! дописать запуск new WB
+            dur_min_sec = '02:00'  # Время на newWB
+            process_new_wb = run_new_wb(dur_min_sec, wb_title)
+            # Запускаем следующий РБ
+            process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
+
             # Таймер newWB (время на нажатие кнопки Next)
             time.sleep(120)  # 2 минуты
             pass  # !! действия при переключении к сл. РБ

@@ -60,7 +60,7 @@ class NewWB(tk.Tk):
         button_frame.pack(fill=tk.X)
 
         self.update_button = tk.Button(button_frame, text="Next", bg='#252824',
-                                       fg='white', command=self.update_action)
+                                       fg='white', command=self.next_action)
         self.update_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         self.fix_button = tk.Button(button_frame, text="Hide", bg='#252824',
@@ -95,8 +95,8 @@ class NewWB(tk.Tk):
             self.timer_event = self.after(1000, self.update_timer)
 
 
-    def update_action(self):
-        print("Update button pressed")
+    def next_action(self):
+        self.stop()
 
 
     def activate_window(self):
@@ -157,6 +157,12 @@ class NewWB(tk.Tk):
 
     def stop(self):
         self.destroy()
+
+
+def app_new_wb(dur_min_sec, wb_title):
+    wb_root = NewWB(dur_min_sec, wb_title)
+    wb_root.mainloop()
+
 
 if __name__ == '__main__':
     app = NewWB('01:10', '12345678901234567')

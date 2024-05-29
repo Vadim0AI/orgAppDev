@@ -24,4 +24,4 @@ def run_wb_timer(id_days):
                                                args=(dur_min_sec, wb_title))
     process_timer_rb.start()
 
-    return process_timer_rb, delta_sec
+    return process_timer_rb, delta_sec, wb_title
