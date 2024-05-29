@@ -8,6 +8,7 @@ from src.organizer.interface.wb_timer import run_wb
 from src.organizer.interface.new_wb import NewWB
 from first_launch import first_launch
 from loading_schedule import loading_schedule
+from src.organizer.run_wb_timer import run_wb_timer
 
 
 # TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
@@ -51,53 +52,44 @@ if __name__ == '__main__':
     # Парсим расписание на день из excel и помещает в БД.
     # loading_schedule(db, id_days, path_d_now)
 
-
     stop_timer = False
     stop_new_wb = False
 
-    n = 1
-    # Запускаем цикл РБ ...
+    # Производим первый запуск РБ
+    process_timer_rb, delta_sec = run_wb_timer(id_days)
+    # Ждем, пока не закончится РБ
+    time.sleep(delta_sec)
+
+    # Запускаем цикл РБ
     while True:
-        print(n)
-        n += 1
-        # Произвожу поиск текущего РБ в таблице БД "day_wb",
-        #   отсеивая по id_days ...
-        now_wb = where_now_wb(id_days)
-        if now_wb == 'sleep':
-            pass  # TODO: дописать - что делать, если время sleep ...
-        wb_row, delta_sec = now_wb
-
-        #   Для этого нужно получить: длительность РБ
-        # Запускаю таймер РБ
-
-        duration_min = int(delta_sec / 60)
-        duration_sec = delta_sec - (duration_min * 60)
-        # длительность РБ в формате 'mm:ss'
-        dur_min_sec: str = '{:02d}:{:02d}'.format(duration_min, duration_sec)
-        # Чтобы запустить таймер, нужно получить общее время для отсчета и title
-        #   задачи РБ
-        wb_title = wb_row[3]
-
-
-        print('delta_sec: ', delta_sec)
-        print('duration_min: ', duration_min)
-        print('duration_sec: ', duration_sec)
-        print('dur_min_sec: ', dur_min_sec)
-
-
-        # Запускаем таймер РБ в новом процессе
-        process_timer_rb = multiprocessing.Process(target=run_wb,
-                                                   args=(dur_min_sec, wb_title))
-        process_timer_rb.start()
-
-
-        # Ждем, пока не закончится РБ
-        time.sleep(delta_sec)
 
         # Если таймер РБ еще не закончился - завершаем его процесс
         while process_timer_rb.is_alive():
             process_timer_rb.kill()
             time.sleep(2)
+
+            # Запускаем следующий РБ
+            process_timer_rb, delta_sec = run_wb_timer(id_days)
+            # Запускаем таймер new РБ
+            pass #  !! дописать запуск new WB
+            # Таймер newWB (время на нажатие кнопки Next)
+            time.sleep(120)  # 2 минуты
+            pass  # !! действия при переключении к сл. РБ
+            # 1. close, open, blocked
+            # 2. прекращение таймера new РБ
+
+            # Таймер об окончании следующего РБ
+            time.sleep(delta_sec - 120)  # отнимаем время предыдущего таймера
+
+
+
+
+        process_timer_rb, delta_sec = run_wb_timer(id_days)
+
+        # Ждем, пока не закончится РБ
+        time.sleep(delta_sec)
+
+
 
 
 
