@@ -69,22 +69,29 @@ if __name__ == '__main__':
             process_timer_rb.kill()
             time.sleep(2)
 
-            # TODO: Написать действия при нажатии кнопки Next (closed, open,
-            #  blocked)
             # Запускаем таймер new РБ
             dur_min_sec = '02:00'  # Время на newWB
             process_new_wb = run_new_wb(dur_min_sec, wb_title)
-            # Запускаем следующий РБ
+            # Запускаем таймер следующего РБ
             process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
+            # Таймер newWB (время на нажатие кнопки Next). Если кнопка не
+            #   нажата, то срабатывает действие
+            time_to_newWB = 120
+            while process_new_wb.is_alive():
+                if time_to_newWB <= 0:
+                    process_new_wb.kill()
+                    # TODO: Записать в БД, что РБ не был выполнен;
+                time.sleep(1)
+                time_to_newWB -= 1
 
-            # Таймер newWB (время на нажатие кнопки Next)
-            time.sleep(120)  # 2 минуты
-            pass  # !! действия при переключении к сл. РБ
-            # 1. close, open, blocked
-            # 2. прекращение таймера new РБ
+            # Closed, open, blocked;
 
-            # Таймер об окончании следующего РБ
-            time.sleep(delta_sec - 120)  # отнимаем время предыдущего таймера
+
+
+
+            # Ждем окончания РБ
+            # отнимаем время предыдущего таймера newWB
+            time.sleep(delta_sec - time_to_newWB)
 
 
 
