@@ -18,8 +18,18 @@ from src.organizer.run_new_wb import run_new_wb
 #   неправильного подсчета, он при переходе между РБ считает delta_sec
 #   равным 1 секунде
 
-
-
+def sleep_new_wb(process_new_wb):
+    time_to_newWB = 120
+    while process_new_wb.is_alive():
+        if time_to_newWB <= 0:
+            process_new_wb.kill()
+            # TODO: Записать в БД и в таблицу Day, что РБ НЕ был выполнен;
+        time.sleep(1)
+        time_to_newWB -= 1
+    else:
+        # TODO: Записать в БД и в таблицу Day, что РБ БЫЛ выполнен (если
+        #  была нажата кнопка Next);
+        pass
 
 
 if __name__ == '__main__':
@@ -61,6 +71,8 @@ if __name__ == '__main__':
     # Ждем, пока не закончится РБ
     time.sleep(delta_sec)
 
+    # TODO: run permissions: closed, open, blocked;
+
     # Запускаем цикл РБ
     while True:
 
@@ -69,39 +81,22 @@ if __name__ == '__main__':
             process_timer_rb.kill()
             time.sleep(2)
 
-            # Запускаем таймер new РБ
-            dur_min_sec = '02:00'  # Время на newWB
-            process_new_wb = run_new_wb(dur_min_sec, wb_title)
-            # Запускаем таймер следующего РБ
-            process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
-            # Таймер newWB (время на нажатие кнопки Next). Если кнопка не
-            #   нажата, то срабатывает действие
-            time_to_newWB = 120
-            while process_new_wb.is_alive():
-                if time_to_newWB <= 0:
-                    process_new_wb.kill()
-                    # TODO: Записать в БД, что РБ не был выполнен;
-                time.sleep(1)
-                time_to_newWB -= 1
-
-            # Closed, open, blocked;
+        # Запускаем таймер new РБ
+        dur_min_sec = '02:00'  # Время на newWB
+        process_new_wb = run_new_wb(dur_min_sec, wb_title)
+        # Запускаем таймер следующего РБ
+        process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
+        # Ожидание newWB (время на нажатие кнопки Next). Если кнопка не
+        #   нажата, то срабатывает действие
+        thread_sleep_new_wb = threading.Thread(target=sleep_new_wb,
+                                               args=(process_new_wb,))
+        thread_sleep_new_wb.start()
+        # run permissions: closed, open, blocked;
 
 
-
-
-            # Ждем окончания РБ
-            # отнимаем время предыдущего таймера newWB
-            time.sleep(delta_sec - time_to_newWB)
-
-
-
-
-        process_timer_rb, delta_sec = run_wb_timer(id_days)
-
-        # Ждем, пока не закончится РБ
-        time.sleep(delta_sec)
-
-
+        # Ждем окончания РБ
+        if process_timer_rb.is_alive():
+            time.sleep(delta_sec)
 
 
 

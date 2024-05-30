@@ -37,19 +37,20 @@ def close_window_by_title(dir_names):
         print(f"Окно с заголовком '{dir_name}' не найдено.")
 
 
-def orgApp_close(process_names, dir_names):
+def org_app_close(process_names, dir_names):
     kill_process_by_name(process_names)
     close_window_by_title(dir_names)
 
 
-# Список процессов для завершения
-process_names = ["Taskmgr.exe", "mmc.exe", "SystemSettings.exe",
-                "vadiktxt.exe"]
-# Список директорий / окон для закрытия (пишется title окна)
-dir_names = ["Пользователи", "Локальный диск (C:)", "Свойства: abc",
-                 "Разрешения для группы"]
+if __name__ == '__main__':
+    # Список процессов для завершения
+    process_names = ["Taskmgr.exe", "mmc.exe", "SystemSettings.exe",
+                    "vadiktxt.exe"]
+    # Список директорий / окон для закрытия (пишется title окна)
+    dir_names = ["Пользователи", "Локальный диск (C:)", "Свойства: abc",
+                     "Разрешения для группы"]
 
-orgApp_close(process_names, dir_names)
+    org_app_close(process_names, dir_names)
 
 
 
