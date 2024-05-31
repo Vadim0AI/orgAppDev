@@ -25,6 +25,22 @@ def close_window_by_title(dir_names):
     """ Закрывает окна Windows по их title """
     # Получаем список всех окон
     all_windows = pygetwindow.getAllTitles()
+
+    # Если в начале списка dir_names: '*', то закрываем все окна,
+    #   кроме последующих элементов dir_names
+    if dir_names[0] == '*':
+        for dir_name in dir_names:
+            if all_windows.count(dir_name) > 0:
+                try:
+                    all_windows.remove(dir_name)
+                except ValueError:
+                    pass
+        for window_title in all_windows:
+            window = pygetwindow.getWindowsWithTitle(window_title)[0]
+            window.close()
+        return
+
+    # Если в начале списка dir_names нет звездочки
     for dir_name in dir_names:
         # Проверяем каждое окно на полное совпадение с заголовком
         for window_title in all_windows:
