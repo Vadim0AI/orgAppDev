@@ -7,7 +7,7 @@ from src.organizer.run_wb_timer import run_wb_timer
 from src.organizer.run_new_wb import run_new_wb
 from src.organizer.permissions.orgApp_open import open_file_app_dir_url
 from src.organizer.permissions.orgApp_close import org_app_close
-from src.organizer.permissions.orgApp_blocked import org_app_blocked, stop_flag
+from src.organizer.permissions.orgApp_blocked_m import ThreadBlocked
 
 
 # TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
@@ -16,21 +16,19 @@ from src.organizer.permissions.orgApp_blocked import org_app_blocked, stop_flag
 #   неправильного подсчета, он при переходе между РБ считает delta_sec
 #   равным 1 секунде
 
-def sleep_new_wb(process_new_wb, thread_blocked):
+
+def kill_new_wb(process_new_wb, wb_title, path_to_db):
     time_to_newWB = 120
+    global stop_flag
     while process_new_wb.is_alive():
         if time_to_newWB <= 0:
             process_new_wb.kill()
-            # Остановить поток blocked;
-            org_app_blocked.stop_flag = True
             # TODO: Записать в БД и в таблицу Day, что РБ НЕ был выполнен;
         time.sleep(1)
         time_to_newWB -= 1
     else:
         # TODO: Записать в БД и в таблицу Day, что РБ БЫЛ выполнен (если
         #  была нажата кнопка Next);
-        # Остановить поток blocked;
-        org_app_blocked.stop_flag = True
         pass
 
 
@@ -76,8 +74,10 @@ if __name__ == '__main__':
     open_file_app_dir_url(wb_title, path_to_db)
     org_app_close(wb_title, path_to_db)
     # Запуск потока для blocked
-    thread_blocked = threading.Thread(target=org_app_blocked,
-                                      args=(wb_title, path_to_db))
+
+    blocked_obj = ThreadBlocked()
+    thread_blocked = threading.Thread(target=blocked_obj.org_app_blocked,
+                                      args=(path_to_db, wb_title))
     thread_blocked.start()
 
     # Ждем, пока не закончится РБ
@@ -98,19 +98,39 @@ if __name__ == '__main__':
         process_new_wb = run_new_wb(dur_min_sec, wb_title)
         # Запускаем таймер следующего РБ
         process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
-        # Ожидание newWB (время на нажатие кнопки Next). Если кнопка не
-        #   нажата, то срабатывает действие
-        thread_sleep_new_wb = threading.Thread(target=sleep_new_wb,
-                                               args=(process_new_wb,))
+        # Ожидание newWB (время на нажатие кнопки Next). sleep_new_wb
+        #   отслеживает завершение процесса таймера new_wb, и в зависимости от
+        #   того, была ли нажата кнопка Next, или время было упущено -
+        #   вносит данные в статистику, а также выполняет closed, open,
+        #   blocked;
+        thread_sleep_new_wb = threading.Thread(target=kill_new_wb,
+                                               args=(process_new_wb,
+                                                     blocked_obj))
         thread_sleep_new_wb.start()
-        # run permissions: closed, open, blocked;
 
+        # Флаг, обозначающий, было ли выполнено: closed, open, blocked;
+        permissions_run = False
 
         # Ждем окончания РБ
-        if process_timer_rb.is_alive():
-            time.sleep(delta_sec)
+        while delta_sec >= 0:
+            delta_sec -= 1
+            time.sleep(1)
 
-
+            # Выполняем проверку - жив ли процесс таймера new_wb, если нет -
+            #   closed, open, blocked
+            if not process_new_wb.is_alive() and not permissions_run:
+                permissions_run = True
+                # run permissions: closed, open;
+                open_file_app_dir_url(wb_title, path_to_db)
+                org_app_close(wb_title, path_to_db)
+                # Остановка предыдущего blocked
+                blocked_obj.stop_flag = True
+                # Запуск нового blocked
+                blocked_obj = ThreadBlocked()
+                thread_blocked = threading.Thread(
+                    target=blocked_obj.org_app_blocked,
+                    args=(path_to_db, wb_title))
+                thread_blocked.start()
 
 
         # После завершения таймера - окно подтверждения окончания РБ ...
