@@ -1,5 +1,5 @@
 import sqlite3
-from parse_table import parse_table
+from src.organizer.parse_table import parse_table
 
 
 
@@ -13,12 +13,17 @@ def parse_wb(db: str, path_wb: str):
     # Помещаем значения списка в существующую базу данных SQLite
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
+        # Удаляем содержимое таблицы wb базы данных, чтобы потом полностью
+        #   заменить ее значения
+        cursor.execute(
+            '''DELETE FROM wb''')
         # Помещаем значения списка в таблицу
         for row in table:
             cursor.execute(
                 '''INSERT INTO wb 
-                (title, open, close, blocked) 
-                VALUES (?, ?, ?, ?)''',
+                (wb_group, title, open, close, blocked) 
+                VALUES (?, ?, ?, ?, ?)''',
                 row)
         # Сохраняем изменения
         conn.commit()
+

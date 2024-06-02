@@ -17,7 +17,9 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
 
 # Создаем таблицу wb (таблица с РБ и разрешениями к ним)
 cursor.execute('''CREATE TABLE IF NOT EXISTS wb
-                  (title TEXT PRIMARY KEY, 
+                  (id INTEGER PRIMARY KEY,
+                  wb_group TEXT,
+                  title TEXT,
                   open TEXT, 
                   close TEXT,
                   blocked TEXT)''')

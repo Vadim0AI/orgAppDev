@@ -40,7 +40,8 @@ if __name__ == '__main__':
     path_to_now = r'C:\Code\orgApp Dev\resources\now'
     path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
     path_to_future = r'C:\Code\orgApp Dev\resources\future'
-    db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+    path_to_db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+    path_to_wb = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
 
     #   Определить текущее название для файла Day исходя из текущей даты
     name_day = get_name_day(date='today')
@@ -61,7 +62,7 @@ if __name__ == '__main__':
     id_days = 1
 
     # Парсим расписание на день из excel и помещает в БД.
-    # loading_schedule(db, id_days, path_d_now)
+    # loading_schedule(path_to_db, id_days, path_d_now)
 
     stop_timer = False
     stop_new_wb = False
