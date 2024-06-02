@@ -1,6 +1,6 @@
 import pygetwindow
 import psutil
-import sqlite3
+from src.organizer.permissions.extract_perm import extract_perm
 
 # TODO: Все это время можно было закрывать диспетчер задач, планировщик
 #  задач, настройки времени, вместо создания двух проверяющих скриптов и
@@ -25,6 +25,11 @@ def close_window_by_title(dir_names):
     """ Закрывает окна Windows по их title """
     # Получаем список всех окон
     all_windows = pygetwindow.getAllTitles()
+
+    # TODO: !!! Нужно получить разрешения в том числе на основе группы,
+    #  в которой состоит РБ; См. модуль group_wb.py; Этот функционал
+    #  реализовать позже - пока обойтись простым копированием разрешением и
+    #  ручной их проработкой.
 
     # Если в начале списка dir_names: '*', то закрываем все окна,
     #   кроме последующих элементов dir_names
@@ -54,27 +59,7 @@ def close_window_by_title(dir_names):
 
 
 def org_app_close(db: str, wb_title: str):
-    # Извлекаем список close из базы данных
-    # Подключаемся к базе данных SQLite
-    conn = sqlite3.connect(db)
-    # Создаем объект курсора
-    cursor = conn.cursor()
-    # Выполняем SQL-запрос для выборки данных
-    cursor.execute('SELECT close FROM wb WHERE title = ?',
-                   (wb_title,))
-    # Получаем список разрешений close
-    close_str = cursor.fetchall()[0][0]
-
-    # Получаем два отдельных списка process_names и dir_names
-    close_list = close_str.split(sep=' | ')
-    print(close_str)
-    print(type(close_str))
-    process_names: str = close_list[0]
-    dir_names: str = ''
-    if len(close_list) > 1:
-        dir_names = close_list[1]
-    process_names: list = process_names.split(sep=', ')
-    dir_names: list = dir_names.split(sep=', ')
+    process_names, dir_names = extract_perm(db, wb_title, type_perm='close')
 
     # Закрываем процессы и окна
     kill_process_by_name(process_names)

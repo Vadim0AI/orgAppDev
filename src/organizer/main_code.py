@@ -1,15 +1,13 @@
 import time
-import multiprocessing
-from parse_table import parse_table
 from get_name_day import get_name_day
-from where_now_wb import where_now_wb
 import threading
-from src.organizer.interface.wb_timer import run_wb
-from src.organizer.interface.new_wb import NewWB
 from first_launch import first_launch
 from loading_schedule import loading_schedule
 from src.organizer.run_wb_timer import run_wb_timer
 from src.organizer.run_new_wb import run_new_wb
+from src.organizer.permissions.orgApp_open import open_file_app_dir_url
+from src.organizer.permissions.orgApp_close import org_app_close
+from src.organizer.permissions.orgApp_blocked import org_app_blocked, stop_flag
 
 
 # TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
@@ -18,17 +16,21 @@ from src.organizer.run_new_wb import run_new_wb
 #   неправильного подсчета, он при переходе между РБ считает delta_sec
 #   равным 1 секунде
 
-def sleep_new_wb(process_new_wb):
+def sleep_new_wb(process_new_wb, thread_blocked):
     time_to_newWB = 120
     while process_new_wb.is_alive():
         if time_to_newWB <= 0:
             process_new_wb.kill()
+            # Остановить поток blocked;
+            org_app_blocked.stop_flag = True
             # TODO: Записать в БД и в таблицу Day, что РБ НЕ был выполнен;
         time.sleep(1)
         time_to_newWB -= 1
     else:
         # TODO: Записать в БД и в таблицу Day, что РБ БЫЛ выполнен (если
         #  была нажата кнопка Next);
+        # Остановить поток blocked;
+        org_app_blocked.stop_flag = True
         pass
 
 
@@ -69,10 +71,19 @@ if __name__ == '__main__':
 
     # Производим первый запуск РБ
     process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
+
+    # run permissions: closed, open, blocked;
+    open_file_app_dir_url(wb_title, path_to_db)
+    org_app_close(wb_title, path_to_db)
+    # Запуск потока для blocked
+    thread_blocked = threading.Thread(target=org_app_blocked,
+                                      args=(wb_title, path_to_db))
+    thread_blocked.start()
+
     # Ждем, пока не закончится РБ
     time.sleep(delta_sec)
 
-    # TODO: run permissions: closed, open, blocked;
+    # TODO: Нужно остановить ранее запущенный поток blocked;
 
     # Запускаем цикл РБ
     while True:

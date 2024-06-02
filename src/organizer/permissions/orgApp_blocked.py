@@ -1,32 +1,25 @@
-from src.organizer.permissions.orgApp_close import kill_process_by_name
-from time import sleep
-import threading
-
-# TODO: Модуль не доделан
-
-def blocked_process_by_name(process_name):
-    while True:
-        for process in process_name:
-            kill_process_by_name(process)
-        sleep(3)
+from src.organizer.permissions.extract_perm import extract_perm
+from src.organizer.permissions.orgApp_close import (kill_process_by_name,
+                                                    close_window_by_title)
+import time
 
 
-def orgApp_blocked(process_name):
-    # Создание потока
-    thread = threading.Thread(target=blocked_process_by_name, args=(process_name,))
-    # Запуск потока
-    thread.start()
+# Устанавливаем флаг остановки процесса блокировки
+stop_flag = False
 
 
-processes = ["Taskmgr.exe", "mmc.exe", "SystemSettings.exe", "vadiktxt.exe"]
-orgApp_blocked(processes)
+def org_app_blocked(db: str, wb_title: str):
+    # Устанавливаем флаг остановки процесса блокировки внутри функции,
+    #   чтобы при следующем запуске гарантировать, что дальнейший цикл будет
+    #   запущен
+    stop_flag = False
 
-print(3)
-a = 84
-b = 32
-c = a**b
-print(c)
+    # Получаем списки для блокировки
+    process_names, dir_names = extract_perm(db, wb_title, type_perm='blocked')
 
-while True:
-    print(b**a, '\n')
-    sleep(2)
+    # Выполняем цикл блокировки
+    while not stop_flag:
+        # Закрываем процессы и окна
+        kill_process_by_name(process_names)
+        close_window_by_title(dir_names)
+        time.sleep(1)
