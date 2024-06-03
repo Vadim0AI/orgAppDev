@@ -8,6 +8,7 @@ from src.organizer.run_new_wb import run_new_wb
 from src.organizer.permissions.orgApp_open import open_file_app_dir_url
 from src.organizer.permissions.orgApp_close import org_app_close
 from src.organizer.permissions.orgApp_blocked_m import ThreadBlocked
+from src.organizer.sleep_pc import sleep_pc
 
 
 # TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
@@ -70,6 +71,10 @@ if __name__ == '__main__':
     # Производим первый запуск РБ
     process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
 
+    # Если РБ 'sleep' - выключаем ПК
+    if wb_title == 'sleep':
+        sleep_pc()
+
     # run permissions: closed, open, blocked;
     open_file_app_dir_url(wb_title, path_to_db)
     org_app_close(path_to_db, wb_title)
@@ -120,6 +125,9 @@ if __name__ == '__main__':
             #   closed, open, blocked
             if not process_new_wb.is_alive() and not permissions_run:
                 permissions_run = True
+                # Если РБ 'sleep' - выключаем ПК
+                if wb_title == 'sleep':
+                    sleep_pc()
                 # run permissions: closed, open;
                 open_file_app_dir_url(wb_title, path_to_db)
                 org_app_close(path_to_db, wb_title)
