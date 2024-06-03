@@ -72,7 +72,7 @@ if __name__ == '__main__':
 
     # run permissions: closed, open, blocked;
     open_file_app_dir_url(wb_title, path_to_db)
-    org_app_close(wb_title, path_to_db)
+    org_app_close(path_to_db, wb_title)
     # Запуск потока для blocked
 
     blocked_obj = ThreadBlocked()
@@ -122,7 +122,7 @@ if __name__ == '__main__':
                 permissions_run = True
                 # run permissions: closed, open;
                 open_file_app_dir_url(wb_title, path_to_db)
-                org_app_close(wb_title, path_to_db)
+                org_app_close(path_to_db, wb_title)
                 # Остановка предыдущего blocked
                 blocked_obj.stop_flag = True
                 # Запуск нового blocked

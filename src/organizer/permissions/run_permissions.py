@@ -29,7 +29,3 @@ if __name__ == '__main__':
     path_to_wb = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
     path_to_db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
     parse_wb(path_to_db, path_to_wb)
-
-
-
-
