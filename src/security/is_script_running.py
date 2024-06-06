@@ -1,3 +1,5 @@
+import psutil
+
 
 def is_script_running(self, script_name):
     """

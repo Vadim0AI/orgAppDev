@@ -31,8 +31,8 @@ def watch_folder(folder_path):
         time.sleep(1)
 
 
-# Укажите путь к папке, которую вы хотите отслеживать
-folder_path = r'C:\Users\AI\Desktop\abc'
-
-# Запускаем функцию отслеживания папки
-watch_folder(folder_path)
+if __name__ == "__main__":
+    # Укажите путь к папке, которую вы хотите отслеживать
+    folder_path = r'C:\Users\AI\Desktop\abc'
+    # Запускаем функцию отслеживания папки
+    watch_folder(folder_path)
