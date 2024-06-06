@@ -65,7 +65,13 @@ class CountdownTimer(tk.Tk):
         self.menu_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         self.today_button = tk.Button(button_frame_1, text="Today",
-                                      bg='#252824', fg='white', command=self.update_action)
+                                      bg='#252824', fg='white',
+                                      command=self.today_action)
+        self.today_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        self.today_button = tk.Button(button_frame_1, text="Temp.",
+                                      bg='#252824', fg='white',
+                                      command=self.temp_action)
         self.today_button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         self.fix_button = tk.Button(button_frame_1, text="Hide", bg='#252824',
@@ -76,10 +82,28 @@ class CountdownTimer(tk.Tk):
         self.menu_buttons_visible = False
         self.menu_buttons_height = 20  # Предполагаемая высота кнопок меню
 
-        for text in ["Tomorrow", "History", "WB", "⚙"]:
-            button = tk.Button(self.menu_buttons_frame, text=text, bg='#252824',
-                               fg='white', command=lambda t=text: self.menu_action(t))
-            button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+        button = tk.Button(self.menu_buttons_frame, text='Tomorrow', bg='#252824',
+                           fg='white',
+                           command=self.tomorrow_action)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        button = tk.Button(self.menu_buttons_frame, text='History',
+                           bg='#252824',
+                           fg='white',
+                           command=self.history_action)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        button = tk.Button(self.menu_buttons_frame, text='WB',
+                           bg='#252824',
+                           fg='white',
+                           command=self.wb_action)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=True)
+
+        button = tk.Button(self.menu_buttons_frame, text='⚙',
+                           bg='#252824',
+                           fg='white',
+                           command=self.setting_action)
+        button.pack(side=tk.LEFT, fill=tk.X, expand=True)
 
         self.timer_event = self.after(1000, self.update_timer)
         self.set_window_position()
@@ -100,9 +124,26 @@ class CountdownTimer(tk.Tk):
             self.label.config(text="     " + self.format_time(self.time_remaining) + "  |  " + self.description)
             self.timer_event = self.after(1000, self.update_timer)
 
-    def update_action(self):
+    def today_action(self):
+        print("today button pressed")
+
+    def temp_action(self):
         print("Update button pressed")
 
+    def tomorrow_action(self):
+        print("Update button pressed")
+
+    def history_action(self):
+        print("Update button pressed")
+
+    def wb_action(self):
+        print("Update button pressed")
+
+    def setting_action(self):
+        print("Update button pressed")
+
+    def update_action(self):
+        print("Update button pressed")
 
     def menu_action(self, action=None):
         """
