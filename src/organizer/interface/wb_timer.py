@@ -124,26 +124,41 @@ class CountdownTimer(tk.Tk):
             self.label.config(text="     " + self.format_time(self.time_remaining) + "  |  " + self.description)
             self.timer_event = self.after(1000, self.update_timer)
 
+
     def today_action(self):
+        """
+        При нажатии на Today
+        1) Если нет файла расписания на сегодня, то он создается с нужным
+        именем и помещается в папку now; Открывается excel для составления
+        расписания на сегодня
+        2) При повторном нажатии на кнопку, если открыт excel, выполняется
+        проверка расписания и выводится сообщение о результате проверки.
+        Если оно прошло проверку, то парсится в БД и активируется в качестве
+        текущего расписания.
+
+        """
         print("today button pressed")
 
+
     def temp_action(self):
-        print("Update button pressed")
+        print("temp button pressed")
+
 
     def tomorrow_action(self):
-        print("Update button pressed")
+        print("tomorrow button pressed")
+
 
     def history_action(self):
-        print("Update button pressed")
+        print("history button pressed")
+
 
     def wb_action(self):
-        print("Update button pressed")
+        print("wb button pressed")
+
 
     def setting_action(self):
-        print("Update button pressed")
+        print("setting button pressed")
 
-    def update_action(self):
-        print("Update button pressed")
 
     def menu_action(self, action=None):
         """
