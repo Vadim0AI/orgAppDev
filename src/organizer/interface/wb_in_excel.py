@@ -3,6 +3,7 @@ import openpyxl
 from src.organizer.permissions.orgApp_close import kill_process_by_name
 import psutil
 
+
 def wb_db_in_excel(db, wb_excel):
     # Подключаемся к базе данных SQLite
     conn = sqlite3.connect(db)
