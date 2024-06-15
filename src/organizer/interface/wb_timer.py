@@ -4,6 +4,7 @@ import win32gui
 import win32con
 from src.organizer.get_open_windows_with_processes import get_open_windows_with_processes
 import os
+from is_excel_file_open import is_excel_file_open
 
 
 class CountdownTimer(tk.Tk):
@@ -163,7 +164,9 @@ class CountdownTimer(tk.Tk):
         #  откатить изменения до уровня как в БД
 
         # Проверяем, что файл открыт
-        if os.path.exists(
+        # TODO: !!! На самом деле проверяет, что файл просто существует,
+        #  а не открыт (исправить)
+        if is_excel_file_open(
                 r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'):
             # Проверяем, что сейчас РБ "development orgApp" или
             #   "setting orgApp"
