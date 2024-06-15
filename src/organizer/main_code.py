@@ -11,13 +11,6 @@ from src.organizer.permissions.orgApp_blocked_m import ThreadBlocked
 from src.organizer.sleep_pc import sleep_pc
 
 
-# TODO: !!! При запуске таймера, он вычисляет время без учета секунд,
-#  получается некорректный ход таймера. Он всегда запускает минуты ровно.
-#   Как я выяснил - ошибка где-то в where_now_wb. Также из-за этого
-#   неправильного подсчета, он при переходе между РБ считает delta_sec
-#   равным 1 секунде
-
-
 def kill_new_wb(process_new_wb, wb_title, path_to_db):
     time_to_newWB = 120
     global stop_flag

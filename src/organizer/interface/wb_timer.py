@@ -1,7 +1,10 @@
+import time
 import tkinter as tk
 import win32gui
 import win32con
 from src.organizer.get_open_windows_with_processes import get_open_windows_with_processes
+import os
+
 
 class CountdownTimer(tk.Tk):
     """
@@ -137,11 +140,14 @@ class CountdownTimer(tk.Tk):
         текущего расписания.
 
         """
+        # Проверяем, есть ли расписание на сегодня
+
+
         print("today button pressed")
 
 
     def temp_action(self):
-        print("temp button pressed")
+        os.startfile(r'C:\Code\orgApp Dev\resources\templates\day_templates')
 
 
     def tomorrow_action(self):
@@ -149,15 +155,35 @@ class CountdownTimer(tk.Tk):
 
 
     def history_action(self):
-        print("history button pressed")
+        os.startfile(r'C:\Code\orgApp Dev\resources\history')
 
 
     def wb_action(self):
-        print("wb button pressed")
+        # TODO: Нужно сделать проверку, можно ли сохранять файл; Если нет -
+        #  откатить изменения до уровня как в БД
+
+        # Проверяем, что файл открыт
+        if os.path.exists(
+                r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'):
+            # Проверяем, что сейчас РБ "development orgApp" или
+            #   "setting orgApp"
+            if (self.description == 'development orgApp' or self.description ==
+                    'setting orgApp'):
+                print('Сохранение WB разрешено')
+                # Сохранение WB в БД
+            else:
+                print('Сохранение WB НЕ разрешено')
+                # Вернуть excel в состояние, как в БД
+        else:
+            # Открываем файл
+            os.startfile(
+                r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx')
+
+        # TODO: Добавить уведомления о результатах операции сохранения;
 
 
     def setting_action(self):
-        print("setting button pressed")
+        os.startfile(r'C:\Code\orgApp Dev\resources\settings\settings.xlsx')
 
 
     def menu_action(self, action=None):

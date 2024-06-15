@@ -16,7 +16,7 @@ def open_file_app_dir_url(wb_title: str, db: str, program="explorer",
     # Выполняем SQL-запрос для выборки данных
     cursor.execute(f'SELECT open FROM wb WHERE title = ?',
                    (wb_title,))
-    # Получаем строку дя open
+    # Получаем строку для open
     path_or_url: str = cursor.fetchall()[0][0]
     # Преобразуем в список
     path_or_url: list = path_or_url.split(sep=', ')
