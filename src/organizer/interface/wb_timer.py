@@ -5,6 +5,9 @@ import win32con
 from src.organizer.get_open_windows_with_processes import get_open_windows_with_processes
 import os
 from is_excel_file_open import is_excel_file_open
+from plyer import notification
+from wb_in_excel import wb_db_in_excel
+from src.organizer.parse_wb import parse_wb
 
 
 class CountdownTimer(tk.Tk):
@@ -160,12 +163,9 @@ class CountdownTimer(tk.Tk):
 
 
     def wb_action(self):
-        # TODO: Нужно сделать проверку, можно ли сохранять файл; Если нет -
-        #  откатить изменения до уровня как в БД
-
+        db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+        wb_excel = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
         # Проверяем, что файл открыт
-        # TODO: !!! На самом деле проверяет, что файл просто существует,
-        #  а не открыт (исправить)
         if is_excel_file_open(
                 r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'):
             # Проверяем, что сейчас РБ "development orgApp" или
@@ -174,25 +174,53 @@ class CountdownTimer(tk.Tk):
                     'setting orgApp'):
                 print('Сохранение WB разрешено')
                 # Сохранение WB в БД
+                parse_wb(db, wb_excel)
             else:
                 print('Сохранение WB НЕ разрешено')
-                hwnd = 0  # Обработчик окна, который вы хотите отображать
-                #   сообщение
-                # win32gui.MessageBox(hwnd, "Сохранение WB НЕ "
-                #                                 "разрешено", "orgApp",
-                #                     win32con.MB_OK)
-                print(123)
+                notification.notify(
+                    title='Сохранение WB НЕ разрешено',
+                    message='Возвращен прежний вид таблицы work_blocks'
+                )
                 # Вернуть excel в состояние, как в БД
+                wb_db_in_excel(db, wb_excel)
         else:
             # Открываем файл
             os.startfile(
                 r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx')
 
-        # TODO: Добавить уведомления о результатах операции сохранения;
+
 
 
     def setting_action(self):
         os.startfile(r'C:\Code\orgApp Dev\resources\settings\settings.xlsx')
+
+        # TODO: Далее просто копия кнопки WB (поменять!!!)
+
+        db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+        wb_excel = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
+        # Проверяем, что файл открыт
+        if is_excel_file_open(
+                r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'):
+            # Проверяем, что сейчас РБ "development orgApp" или
+            #   "setting orgApp"
+            if (self.description == 'development orgApp' or self.description ==
+                    'setting orgApp'):
+                print('Сохранение WB разрешено')
+                # Сохранение WB в БД
+                parse_wb(db, wb_excel)
+            else:
+                print('Сохранение WB НЕ разрешено')
+                notification.notify(
+                    title='Сохранение WB НЕ разрешено',
+                    message='Возвращен прежний вид таблицы work_blocks'
+                )
+                # Вернуть excel в состояние, как в БД
+                wb_db_in_excel(db, wb_excel)
+        else:
+            # Открываем файл
+            os.startfile(
+                r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx')
+
 
 
     def menu_action(self, action=None):

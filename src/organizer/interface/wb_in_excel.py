@@ -2,9 +2,11 @@ import sqlite3
 import openpyxl
 from src.organizer.permissions.orgApp_close import kill_process_by_name
 import psutil
+from time import sleep
 
 
 def wb_db_in_excel(db, wb_excel):
+    """ Возвращает таблицу work_blocks.xlsx к виду, в соответствии с БД """
     # Подключаемся к базе данных SQLite
     conn = sqlite3.connect(db)
     # Создаем объект курсора
@@ -17,6 +19,8 @@ def wb_db_in_excel(db, wb_excel):
     for proc in psutil.process_iter():
         if proc.name() == 'wps.exe':
             proc.kill()
+
+    sleep(1)
 
     # Открытие существующего файла Excel
     workbook = openpyxl.load_workbook(wb_excel)
