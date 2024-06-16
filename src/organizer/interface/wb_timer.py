@@ -176,6 +176,12 @@ class CountdownTimer(tk.Tk):
                 # Сохранение WB в БД
             else:
                 print('Сохранение WB НЕ разрешено')
+                hwnd = 0  # Обработчик окна, который вы хотите отображать
+                #   сообщение
+                # win32gui.MessageBox(hwnd, "Сохранение WB НЕ "
+                #                                 "разрешено", "orgApp",
+                #                     win32con.MB_OK)
+                print(123)
                 # Вернуть excel в состояние, как в БД
         else:
             # Открываем файл

@@ -1,12 +1,5 @@
-import pygetwindow
-from src.organizer.permissions.orgApp_close import org_app_close
+import win32gui
+import win32con
 
-all_windows = pygetwindow.getAllTitles()
-print(all_windows)
-
-
-
-
-
-
-
+hwnd = 0  # Замените на обработчик окна, который вы хотите отображать сообщение
+win32gui.MessageBox(hwnd, "Title", "Message", win32con.MB_OK)
