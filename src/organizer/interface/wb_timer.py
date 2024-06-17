@@ -156,6 +156,12 @@ class CountdownTimer(tk.Tk):
 
     def tomorrow_action(self):
         print("tomorrow button pressed")
+        # Проверяем, есть ли файл с нужным именем в папке future
+            # Получаем нужное имя файла
+
+            # Если нет - он копируется из templates и вставляется с нужным
+            # именем
+            # Иначе - просто открывается
 
 
     def history_action(self):
