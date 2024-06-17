@@ -1,6 +1,7 @@
 import time
 from get_name_day import get_name_day
 import threading
+from check_availability_day import check_availability_day
 from first_launch import first_launch
 from loading_schedule import loading_schedule
 from src.organizer.run_wb_timer import run_wb_timer
@@ -46,6 +47,8 @@ if __name__ == '__main__':
     # Перемещаем старые расписания в папку history. Перемещаем расписание
     #     на сегодня из now в папку future. Проверяем, нужно ли включить режим
     #     ограниченной функциональности.
+    # TODO: Реализовать запись в соответсвующую таблицу БД (статус
+    #  ограниченной функциональности на день, факт first_launch за этот день)
     # first_launch(path_to_history, path_to_now, path_to_future, path_d_future,
     #              path_d_now, name_day)
 
@@ -56,6 +59,10 @@ if __name__ == '__main__':
     id_days = 1
 
     # Парсим расписание на день из excel и помещает в БД.
+    # TODO: Возможно это не потребуется т.к. это происходит через кнопки
+    #  интерфейса, просто нужно сдлеать правильное переключение на нужный
+    #  день. Т.е. при составлении на завтра, все парсится в БД, а от туда
+    #  уже используется
     # loading_schedule(path_to_db, id_days, path_d_now)
 
     stop_timer = False
@@ -69,10 +76,12 @@ if __name__ == '__main__':
         sleep_pc()
 
     # run permissions: closed, open, blocked;
-    open_file_app_dir_url(wb_title, path_to_db)
+    # TODO: Похоже closed, open, blocked используют значения не из БД,
+    #  а из excel напрямую - исправить !!!
     org_app_close(path_to_db, wb_title)
-    # Запуск потока для blocked
+    open_file_app_dir_url(wb_title, path_to_db)
 
+    # Запуск потока для blocked
     blocked_obj = ThreadBlocked()
     thread_blocked = threading.Thread(target=blocked_obj.org_app_blocked,
                                       args=(path_to_db, wb_title))
@@ -134,10 +143,7 @@ if __name__ == '__main__':
                 thread_blocked.start()
 
 
-        # После завершения таймера - окно подтверждения окончания РБ ...
         # Дописать меню для orgApp ...
-        # Выключение ПК в случае РБ "sleep"
-        # Запускаю open, close, blocked
 
 
         # При запуске изменения текущего расписания или составления расписания

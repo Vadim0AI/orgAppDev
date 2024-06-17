@@ -36,6 +36,11 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS day_wb
                   FOREIGN KEY (id_days) REFERENCES days (id_days), 
                   FOREIGN KEY (wb_title) REFERENCES wb (title))''')
 
+# Создаем таблицу setting (таблица с настройками orgApp)
+# TODO: Реализовать в версии v2
+# cursor.execute('''CREATE TABLE IF NOT EXISTS setting
+# ''')
+
 # Сохраняем изменения
 conn.commit()
 

@@ -34,7 +34,7 @@ def wb_db_in_excel(db, wb_excel):
     # Замена значений в существующих строках
     row_index = 2  # начинаем со второй строки
     for row in data:
-        for col_index, cell_value in enumerate(row[1:], start=1):
+        for col_index, cell_value in enumerate(row, start=1):
             sheet.cell(row=row_index, column=col_index, value=cell_value)
         row_index += 1
 
