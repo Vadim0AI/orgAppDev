@@ -8,6 +8,11 @@ from src.organizer.interface.is_excel_file_open import is_excel_file_open
 from plyer import notification
 from src.organizer.interface.wb_in_excel import wb_db_in_excel
 from src.organizer.parse_wb import parse_wb
+from src.organizer.get_name_day import get_name_day
+from src.organizer.links import (path_to_future, path_to_clean_templates,
+                                 path_to_db, )
+import shutil
+from src.organizer.loading_schedule import loading_schedule
 
 
 class CountdownTimer(tk.Tk):
@@ -155,13 +160,32 @@ class CountdownTimer(tk.Tk):
 
 
     def tomorrow_action(self):
-        print("tomorrow button pressed")
-        # Проверяем, есть ли файл с нужным именем в папке future
-            # Получаем нужное имя файла
+        # Получаем нужное имя файла, затем путь к нему
+        name_file = get_name_day('tomorrow')
+        path_d_future: str = path_to_future + '\\' + name_file
 
-            # Если нет - он копируется из templates и вставляется с нужным
-            # именем
-            # Иначе - просто открывается
+        # Проверяем, открыт ли уже файл tomorrow
+        if is_excel_file_open(path_d_future):
+            # Выполняем проверку новой версии файла;
+
+            # Если все "ок" - сохраняем новую версию файла в БД;
+            # id_days = 1
+            # loading_schedule(path_to_db, id_days, path_d_now)
+
+            # Если НЕ "ок" - закрываем открытый пользователем
+            #   файл и возвращаем старую версию в соответствии с БД;
+            pass
+        else:
+            # Проверяем, есть ли файл с нужным именем в папке future,
+            #   если нет - он создается перед открытием
+            if not os.path.exists(path_d_future):
+                # Копируем из templates и вставляется с нужным именем
+                source_file_path = path_to_clean_templates + '\\' + 'Day'
+                shutil.copyfile(source_file_path, path_to_future)
+            # Открываем файл
+            os.startfile(path_d_future)
+
+
 
 
     def history_action(self):

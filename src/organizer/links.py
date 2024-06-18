@@ -1,0 +1,6 @@
+path_to_now = r'C:\Code\orgApp Dev\resources\now'
+path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
+path_to_future = r'C:\Code\orgApp Dev\resources\future'
+path_to_db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+path_to_wb = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
+path_to_clean_templates = r'C:\Code\orgApp Dev\resources\templates\clean_templates'

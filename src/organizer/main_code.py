@@ -31,7 +31,8 @@ if __name__ == '__main__':
 
     # Запуск защитных модулей, скриптов и проверок ...
 
-    # TODO: Сделать отдельный файл для всех зависимостей
+    # TODO: Сделать отдельный файл для всех зависимостей (есть модуль links,
+    #  но нужно реализовать безошибочную подгрузку из него позже)
     path_to_now = r'C:\Code\orgApp Dev\resources\now'
     path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
     path_to_future = r'C:\Code\orgApp Dev\resources\future'
