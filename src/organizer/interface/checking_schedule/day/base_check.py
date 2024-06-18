@@ -1,7 +1,8 @@
-import openpyxl
+from src.shared.xlsx_utils.num_rows_xlsx import num_rows_xlsx
 
 
 def base_check(template_path, day_path, sheet_name):
+    # TODO: [~] base_check()
     # Проверяем кол-во строк в файле (должно совпадать с шаблоном) - для
     #   этого обращаемся к детализированным версиям расписаний;
     if not num_rows_check(template_path, day_path, sheet_name):
@@ -18,19 +19,6 @@ def base_check(template_path, day_path, sheet_name):
     # В расписании должен быть РБ "plan day", длительностью не менее десяти
     #   минут;
     return True
-
-
-def num_rows_xlsx(path_to_xlsx, sheet_name):
-    """ Отрывает excel и считает кол-во строк, в которых есть хотя бы одно
-    значение """
-    # Открываем Excel-файл с помощью with
-    with openpyxl.load_workbook(path_to_xlsx) as workbook:
-        # Получаем лист по имени
-        sheet = workbook[sheet_name]
-        # Получаем количество заполненных строк
-        last_row = sheet.max_row
-        return last_row
-    # Файл автоматически закрывается после выполнения блока with
 
 
 def num_rows_check(template_path, day_path, sheet_name):
