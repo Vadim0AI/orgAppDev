@@ -1,5 +1,5 @@
 import sqlite3
-from src.organizer.parse_table import parse_table
+from src.shared.xlsx_utils.parse_table import parse_table
 
 
 

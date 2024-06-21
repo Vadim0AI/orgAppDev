@@ -1,4 +1,4 @@
-from parse_table import parse_table
+from src.shared.xlsx_utils.parse_table import parse_table
 from day_ab_to_wb import day_wb_in_db
 
 

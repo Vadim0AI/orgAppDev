@@ -1,5 +1,6 @@
 import openpyxl
 
+
 def num_rows_xlsx(path_to_xlsx, sheet_name):
     """
     Функция, которая открывает Excel-файл, находит указанный лист и
