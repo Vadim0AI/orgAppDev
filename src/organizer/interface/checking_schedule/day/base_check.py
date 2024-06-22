@@ -36,6 +36,8 @@ def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
         return False
     # В расписании должен быть РБ "plan day", длительностью не менее десяти
     #   минут;
+
+
     return True
 
 
@@ -85,5 +87,19 @@ def end_day_check(day_wb: list, sleep_time: str = '4:00') -> bool:
         return False
 
 
-def check_
+def plan_day_exists(day_wb: list, planning_dur: str) -> bool:
+    """
+    Проверяет, что в расписании есть РБ "plan day", длительностью не менее
+    десяти минут;
 
+    day_wb (list) - расписание, разбитое по РБ;
+    planning_dur (str) - минимальная длительность планирования на завтра;
+     """
+    # Преобразуем строку planning_dur в datetime
+    planning_dur = datetime.strptime(planning_dur, "%H:%M")
+    # Перебираем расписание и проверяем каждый РБ
+    for wb in day_wb:
+        if (wb[2] == 'plan day' and
+                datetime.strptime(wb[5], "%H:%M") > planning_dur):
+            return True
+    return False
