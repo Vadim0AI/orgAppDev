@@ -2,13 +2,15 @@ from src.shared.xlsx_utils.num_rows_xlsx import num_rows_xlsx
 from src.organizer.day_ab_to_wb import day_ab_to_wb, calc_duration
 from src.shared.xlsx_utils.parse_table import parse_table
 from datetime import datetime
+from src.organizer.extract_db import extract_db
 
 
 def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
-               min_wb: int) -> bool:
+               min_wb: int, planning_dur, path_db, wb_table_name) -> bool:
     """
      ...
      min_wb (int) - минимальное приемлемое кол-во РБ в расписании;
+     planning_dur - минимальная длительность РБ "plan day" в формате "hh:mm";
      ...
      """
     # TODO: [~] base_check()
@@ -30,14 +32,17 @@ def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
         return False
     # Проверяем, что нет пустых РБ между началом и концом расписания и все
     #   РБ расписания есть в БД;
-
+    all_wb = extract_db(select_column='title', path_db=path_db,
+                        table_name=wb_table_name)
+    if not check_wb(day_wb, all_wb):
+        return False
     # Проверка: кол-во РБ в расписании не менее пяти (min_wb);
     if not len(day_wb) > min_wb:
         return False
     # В расписании должен быть РБ "plan day", длительностью не менее десяти
     #   минут;
-
-
+    if not plan_day_exists(day_wb, planning_dur):
+        return False
     return True
 
 
@@ -103,3 +108,10 @@ def plan_day_exists(day_wb: list, planning_dur: str) -> bool:
                 datetime.strptime(wb[5], "%H:%M") > planning_dur):
             return True
     return False
+
+
+def check_wb(day_wb: list, all_wb: list):
+    for wb in day_wb:
+        if wb[2].isspace() or (wb[2] in all_wb):
+            return False
+    return True
