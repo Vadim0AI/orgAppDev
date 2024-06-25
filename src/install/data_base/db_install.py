@@ -13,7 +13,8 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
                   date INTEGER, 
                   version INTEGER,  
                   time_change INTEGER,
-                  enough_time INTEGER)''')
+                  enough_time INTEGER,
+                  first_load INTEGER)''')
 
 # Создаем таблицу wb (таблица с РБ и разрешениями к ним)
 cursor.execute('''CREATE TABLE IF NOT EXISTS wb

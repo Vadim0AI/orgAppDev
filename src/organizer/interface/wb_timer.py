@@ -10,8 +10,9 @@ from src.organizer.interface.wb_in_excel import wb_db_in_excel
 from src.organizer.parse_wb import parse_wb
 from src.organizer.get_name_day import get_name_day
 from src.organizer.links import (path_to_future, path_to_clean_templates,
-                                 path_to_db, )
+                                 path_to_db, path_day_temp)
 import shutil
+from src.organizer.checking_schedule.day.base_check import base_check
 from src.organizer.loading_schedule import loading_schedule
 
 
@@ -167,13 +168,17 @@ class CountdownTimer(tk.Tk):
         # Проверяем, открыт ли уже файл tomorrow
         if is_excel_file_open(path_d_future):
             # Выполняем проверку новой версии файла;
-
+            base_check(template_path=path_day_temp, day_path=path_d_future,
+                       sheet_name='wb', start_time='4:00',
+                       sleep_time='21:30', min_wb=10, planning_dur='00:10',
+                       path_db=path_to_db, wb_table_name='wb')
             # Если все "ок" - сохраняем новую версию файла в БД;
             # id_days = 1
             # loading_schedule(path_to_db, id_days, path_d_now)
 
-            # Если НЕ "ок" - закрываем открытый пользователем
-            #   файл и возвращаем старую версию в соответствии с БД;
+            # TODO: ДОБАВИТЬ потом Если НЕ "ок" - предлагаем закрыть открытый
+            #  пользователем файл и возвращаем старую версию в соответствии
+            #  с БД;
             pass
         else:
             # Проверяем, есть ли файл с нужным именем в папке future,
@@ -184,8 +189,6 @@ class CountdownTimer(tk.Tk):
                 shutil.copyfile(source_file_path, path_to_future)
             # Открываем файл
             os.startfile(path_d_future)
-
-
 
 
     def history_action(self):
@@ -364,15 +367,15 @@ def run_wb(dur_min_sec, wb_title):
 
 
 if __name__ == '__main__':
-    # app = CountdownTimer('01:00', 'orgApp')
-    # app.mainloop()
+    app = CountdownTimer('01:00', 'orgApp')
+    app.mainloop()
 
-    # тестируем сохранение wb в БД
-    db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
-    wb_excel = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
-    parse_wb(db, wb_excel)
-    notification.notify(
-        title='Сохранение WB разрешено',
-        message='Таблица была успешно сохранена в БД'
-    )
+    # # тестируем сохранение wb в БД
+    # db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+    # wb_excel = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
+    # parse_wb(db, wb_excel)
+    # notification.notify(
+    #     title='Сохранение WB разрешено',
+    #     message='Таблица была успешно сохранена в БД'
+    # )
 

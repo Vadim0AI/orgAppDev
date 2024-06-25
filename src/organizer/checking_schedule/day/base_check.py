@@ -5,12 +5,18 @@ from datetime import datetime
 from src.organizer.extract_db import extract_db
 
 
-def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
-               min_wb: int, planning_dur, path_db, wb_table_name) -> bool:
+def base_check(template_path: str, day_path: str, sheet_name: str, start_time: str, sleep_time: str,
+               min_wb: int, planning_dur: str, path_db: str, wb_table_name: str) -> bool:
     """
      ...
+     Используется для проверки расписания на завтра при его составлении.
+     Если True - значит все хорошо.
+
      min_wb (int) - минимальное приемлемое кол-во РБ в расписании;
-     planning_dur - минимальная длительность РБ "plan day" в формате "hh:mm";
+     planning_dur (str) - минимальная длительность РБ "plan day" в формате
+        "hh:mm";
+     sheet_name (str) - имя листа excel для детального расписания на день;
+     wb_table_name (str) - имя таблицы в БД для списка всех РБ;
      ...
      """
     # TODO: [~] base_check()
@@ -24,7 +30,7 @@ def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
     day_ab = parse_table(day_path)
     day_wb = day_ab_to_wb(day_ab)
     day_wb = calc_duration(day_wb)
-    # Первый блок - 'start day' и он не раньше 4:00
+    # Первый блок - 'start day' и он не раньше start_time (Например, 4:00)
     if not start_day_check(day_wb, start_time):
         return False
     # Последний блок - 'sleep' и он не позднее 23:00
@@ -36,7 +42,7 @@ def base_check(template_path, day_path, sheet_name, start_time, sleep_time,
                         table_name=wb_table_name)
     if not check_wb(day_wb, all_wb):
         return False
-    # Проверка: кол-во РБ в расписании не менее пяти (min_wb);
+    # Проверка: кол-во РБ в расписании не менее десяти (min_wb);
     if not len(day_wb) > min_wb:
         return False
     # В расписании должен быть РБ "plan day", длительностью не менее десяти
