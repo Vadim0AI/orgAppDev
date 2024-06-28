@@ -3,7 +3,6 @@ from get_name_day import get_name_day
 import threading
 from check_availability_day import check_availability_day
 from first_launch import first_launch
-from loading_schedule import loading_schedule
 from src.organizer.run_wb_timer import run_wb_timer
 from src.organizer.run_new_wb import run_new_wb
 from src.organizer.permissions.orgApp_open import open_file_app_dir_url

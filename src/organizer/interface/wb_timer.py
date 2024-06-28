@@ -13,7 +13,8 @@ from src.organizer.links import (path_to_future, path_to_clean_templates,
                                  path_to_db, path_day_temp)
 import shutil
 from src.organizer.checking_schedule.day.base_check import base_check
-from src.organizer.loading_schedule import loading_schedule
+# from src.organizer.loading_schedule import loading_schedule
+from src.organizer.get_days_from_db import get_days_from_db
 
 
 class CountdownTimer(tk.Tk):
@@ -168,18 +169,19 @@ class CountdownTimer(tk.Tk):
         # Проверяем, открыт ли уже файл tomorrow
         if is_excel_file_open(path_d_future):
             # Выполняем проверку новой версии файла;
-            base_check(template_path=path_day_temp, day_path=path_d_future,
+            if base_check(template_path=path_day_temp, day_path=path_d_future,
                        sheet_name='wb', start_time='4:00',
                        sleep_time='21:30', min_wb=10, planning_dur='00:10',
-                       path_db=path_to_db, wb_table_name='wb')
-            # Если все "ок" - сохраняем новую версию файла в БД;
-            # id_days = 1
-            # loading_schedule(path_to_db, id_days, path_d_now)
-
-            # TODO: ДОБАВИТЬ потом Если НЕ "ок" - предлагаем закрыть открытый
-            #  пользователем файл и возвращаем старую версию в соответствии
-            #  с БД;
-            pass
+                       path_db=path_to_db, wb_table_name='wb'):
+                pass
+                # Если все "ок" - сохраняем новую версию файла в БД;
+                # id_days = 1
+                # loading_schedule(path_to_db, id_days, path_d_now)
+            else:
+                # TODO: ДОБАВИТЬ потом Если НЕ "ок" - предлагаем закрыть открытый
+                #  пользователем файл и возвращаем старую версию в соответствии
+                #  с БД;
+                pass
         else:
             # Проверяем, есть ли файл с нужным именем в папке future,
             #   если нет - он создается перед открытием

@@ -1,7 +1,8 @@
 import sqlite3
+from src.organizer.links import path_to_db
 
 
-def get_days_from_db(date: str, version: str = 'last'):
+def get_days_from_db(date: str, version: str = 'last') -> list:
     """
     Позволяет получить строку расписания на день из БД days по
     дате и версии.
@@ -19,7 +20,7 @@ def get_days_from_db(date: str, version: str = 'last'):
     """
 
     # Создаем соединение с базой данных
-    with sqlite3.connect('test.db') as conn:
+    with sqlite3.connect(path_to_db) as conn:
         # Создаем курсор
         cursor = conn.cursor()
         # Формируем SQL-запрос
@@ -37,3 +38,8 @@ def get_days_from_db(date: str, version: str = 'last'):
         # Получаем результаты
         rows = cursor.fetchall()
         return rows
+
+
+if __name__ == '__main__':
+    a = get_days_from_db('28.06.24')
+    print(a)
