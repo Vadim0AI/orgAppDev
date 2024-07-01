@@ -11,7 +11,7 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS days
                   (id_days INTEGER PRIMARY KEY, 
                   date INTEGER, 
-                  version INTEGER,  
+                  version TEXT,  
                   time_change INTEGER,
                   enough_time INTEGER,
                   first_load INTEGER)''')

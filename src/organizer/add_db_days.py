@@ -2,11 +2,17 @@ import sqlite3
 from src.organizer.links import path_to_db
 
 
-def add_db_days(date, version, time_change, enough_time, first_load):
+def add_db_days(date: str, version: str, time_change: str, enough_time: int,
+                first_load: int) -> None:
     """ Добавляет в БД табл. days новую запись
-    ...
-    time_change (str) - hh:mm:ss dd.mm.yy
-    ...
+
+    date (str) - дата на которую запланировано расписание в формате 'dd.mm.yy'.
+    version (str) - версия расписания. Например, '1.2'.
+    time_change (str) - hh:mm:ss dd.mm.yy.
+    enough_time (int) - время, затраченное на составление этой версии
+        расписания.
+    first_load (int) - 0 или 1, факт того, было ли за сегодня загружено
+    расписание на день (1, если да).
     """
 
     with sqlite3.connect(path_to_db) as conn:

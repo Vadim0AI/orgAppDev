@@ -1,5 +1,6 @@
 from src.organizer.loading_schedule import loading_schedule
 from src.organizer.get_days_from_db import get_days_from_db
+from src.organizer.add_db_days import add_db_days
 import datetime
 
 
@@ -15,8 +16,8 @@ def add_day_schedule(date: str, path_schedule: str, first_load: bool = False):
     """
 
     # Получить текущее время (для time_change) в формате 'hh:mm:ss dd.mm.yy'
-    current_time = datetime.datetime.now()
-    formatted_time = current_time.strftime('%H:%M:%S %d.%m.%y')
+    time_change = datetime.datetime.now()
+    time_change = time_change.strftime('%H:%M:%S %d.%m.%y')
     # Получить id_days по которому будем добавлять расписание в таблицу БД
     #   day_wb
     # TODO: Протестировать,
@@ -26,9 +27,10 @@ def add_day_schedule(date: str, path_schedule: str, first_load: bool = False):
         id_days = 1
     else:
         id_days = days_db_list[0]
-
+    # TODO: Поймет ли sqllite, что first_load False - это 0 (т.е. понимает
+    #  ли он bool), если столбец записан как int?
     # Добавляем новое расписание в БД, табл. days
-
+    add_db_days(date, version, time_change, enough_time, first_load)
     # Добавляем новое расписание в БД, табл. day_wb
     loading_schedule(id_days, path_schedule)
 
