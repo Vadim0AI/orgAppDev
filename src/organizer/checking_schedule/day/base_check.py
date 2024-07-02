@@ -5,8 +5,12 @@ from datetime import datetime
 from src.organizer.extract_db import extract_db
 
 
-def base_check(template_path: str, day_path: str, sheet_name: str, start_time: str, sleep_time: str,
-               min_wb: int, planning_dur: str, path_db: str, wb_table_name: str) -> bool:
+# TODO: Переделать функцию так, чтобы выводился кортеж (bool, str) - строка
+#  должна описывать причину, почему расписание не прошло проверку.
+def base_check(template_path: str, day_path: str, sheet_name: str,
+               start_time: str, sleep_time: str,
+               min_wb: int, planning_dur: str, path_db: str,
+               wb_table_name: str) -> bool:
     """
      ...
      Используется для проверки расписания на завтра при его составлении.

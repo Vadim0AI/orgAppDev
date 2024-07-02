@@ -28,6 +28,6 @@ def add_db_days(date: str, version: str, time_change: str, enough_time: int,
 
 
 if __name__ == '__main__':
-    add_db_days(date='28.06.24', version='1.0',
+    add_db_days(date='28.06.24', version='1',
                 time_change='21:28:56 28.06.24',
                 enough_time=0, first_load=0)

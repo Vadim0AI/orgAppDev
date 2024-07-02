@@ -6,7 +6,8 @@ import datetime
 
 def add_day_schedule(date: str, path_schedule: str, enough_time: bool = False,
                      first_launch: bool = False):
-    """ Добавляет новое расписание в таблицы БД days и day_wb
+    """ Добавляет новое расписание в таблицы БД days и day_wb. Функция сама
+    определяет id и version нового добавляемого расписания (увеличивая их на 1)
 
     date (str) - дата по которой нужно добавить расписание в формате
         'dd.mm.yy'.
