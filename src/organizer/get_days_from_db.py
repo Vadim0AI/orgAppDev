@@ -2,21 +2,19 @@ import sqlite3
 from src.organizer.links import path_to_db
 
 
-def get_days_from_db(date: str, version: str = 'last') -> list:
+def get_days_from_db(date: str, version: str = 'last') -> tuple:
     """
-    Позволяет получить строку расписания на день из БД days по
+    Позволяет получить кортеж c записью из БД days по
     дате и версии.
 
     date (str) - дата по которой получить расписание в формате
     'dd.mm.yy'.
-    version (str) - версия расписания не день в формате (пример) '1.2.1'.
+    version (str) - версия расписания на день - натуральные числа от 0.
     Применимо для получения прошлых версий расписаний для аналитики,
     возврата к старым шаблонам и пр. Также поддерживает формат 'last' -
     для получения последней версии расписания. И 'first' для первой.
 
-    rows - возвращает строку из БД days. Это список кортежей (если строк
-    несколько), но поскольку при любом запросе должна выводится одна строка,
-    то должен быть tuple.
+    rows(list) - список с кортежем, содержит нужную нам запись из БД days.
     """
 
     # Создаем соединение с базой данных
@@ -34,10 +32,10 @@ def get_days_from_db(date: str, version: str = 'last') -> list:
             cursor.execute(sql_query, (date,))
         else:
             sql_query = "SELECT * FROM days WHERE date = ? AND version = ?"
-            cursor.execute(sql_query, (date, version))
+            cursor.execute(sql_query, (date, int(version)))
         # Получаем результаты
         rows = cursor.fetchall()
-        return rows
+        return rows[0]
 
 
 if __name__ == '__main__':

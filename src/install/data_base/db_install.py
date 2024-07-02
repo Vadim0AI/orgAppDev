@@ -1,5 +1,6 @@
 import sqlite3
 
+
 # Устанавливаем соединение с базой данных
 #   (если такой базы данных нет, она будет автоматически создана)
 conn = sqlite3.connect(r'C:\Code\orgApp Dev\resources\db\orgApp.db')
@@ -11,10 +12,20 @@ cursor = conn.cursor()
 cursor.execute('''CREATE TABLE IF NOT EXISTS days
                   (id_days INTEGER PRIMARY KEY, 
                   date INTEGER, 
-                  version TEXT,  
+                  version INTEGER,  
                   time_change INTEGER,
                   enough_time INTEGER,
                   first_load INTEGER)''')
+
+# таблица days (описание):
+# id_days INTEGER PRIMARY KEY,
+# date INTEGER,
+# version INTEGER - от 1 до беск.
+# time_change INTEGER - время внесения нового расписания в таблицу,
+#   в формате '%H:%M:%S %d.%m.%y'
+# enough_time INTEGER,
+# first_load INTEGER
+
 
 # Создаем таблицу wb (таблица с РБ и разрешениями к ним)
 cursor.execute('''CREATE TABLE IF NOT EXISTS wb

@@ -4,46 +4,41 @@ from src.organizer.add_db_days import add_db_days
 import datetime
 
 
-def add_day_schedule(date: str, path_schedule: str, first_load: bool = False):
+def add_day_schedule(date: str, path_schedule: str, enough_time: bool = False,
+                     first_launch: bool = False):
     """ Добавляет новое расписание в таблицы БД days и day_wb
 
     date (str) - дата по которой нужно добавить расписание в формате
-    'dd.mm.yy'.
-    version (str) - версия расписания не день в формате (пример) '1.2.1'.
-        Применимо для получения прошлых версий расписаний для аналитики,
-        возврата к старым шаблонам и пр. Также поддерживает формат 'last' -
-        для получения последней версии расписания. И 'first' для первой.
+        'dd.mm.yy'.
+    path_schedule (str) - путь к excel файлу с расписанием.
+    enough_time (bool) - достаточно ли времени было затрачено на составление
+        расписания?
+    first_launch (bool) - это первый запуск orgApp за день? - тогда True.
+        Это нужно, чтобы выполнять одноразовые предварительные действия при
+        первом запуске orgApp за день. Если за день есть хотя бы в одной
+        записи True по этому полю, то предварительные действия больше делать не
+        нужно.
     """
 
-    # Получить текущее время (для time_change) в формате 'hh:mm:ss dd.mm.yy'
+    # Получаем текущее время в формате 'hh:mm:ss dd.mm.yy'.
     time_change = datetime.datetime.now()
     time_change = time_change.strftime('%H:%M:%S %d.%m.%y')
-    # Получить id_days по которому будем добавлять расписание в таблицу БД
-    #   day_wb
-    # TODO: Протестировать,
-    #   нужно ли здесь [0] - будет ли всегда список кортежей, или просто кортеж
-    days_db_list = get_days_from_db(date)[0]
+    # Получаем кортеж c записью из БД days по дате, последней версии.
+    days_db_list = get_days_from_db(date)
+    # Получаем id_days по которому будем
+    #   добавлять расписание в таблицу БД day_wb.
     if len(days_db_list) == 0:
         id_days = 1
+        version = 1
     else:
         id_days = days_db_list[0]
-    # TODO: Поймет ли sqllite, что first_load False - это 0 (т.е. понимает
-    #  ли он bool), если столбец записан как int?
+        version = days_db_list[2]
     # Добавляем новое расписание в БД, табл. days
-    add_db_days(date, version, time_change, enough_time, first_load)
+    add_db_days(date, version, time_change, enough_time, first_launch)
     # Добавляем новое расписание в БД, табл. day_wb
     loading_schedule(id_days, path_schedule)
 
-    #
 
-    # Обработать:
-        # id_days
-        # date
-        # version
-        # time_change
-        # enough_time
-        # first_load
-
-
-
+if __name__ == '__main__':
+    # TODO: Протестировать функцию
     pass
