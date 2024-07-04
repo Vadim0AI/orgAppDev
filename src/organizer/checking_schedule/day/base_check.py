@@ -10,7 +10,7 @@ from src.organizer.extract_db import extract_db
 def base_check(template_path: str, day_path: str, sheet_name: str,
                start_time: str, sleep_time: str,
                min_wb: int, planning_dur: str, path_db: str,
-               wb_table_name: str) -> bool:
+               wb_table_name: str) -> list:
     """
      ...
      Используется для проверки расписания на завтра при его составлении.
@@ -23,37 +23,62 @@ def base_check(template_path: str, day_path: str, sheet_name: str,
      wb_table_name (str) - имя таблицы в БД для списка всех РБ;
      ...
      """
+    # Результат проверки (пока пустой)
+    check_result: list = [True, 'Расписание прошло проверку - все ок']
+
     # TODO: [~] base_check()
     # Проверяем кол-во строк в файле (должно совпадать с шаблоном) - для
     #   этого обращаемся к детализированным версиям расписаний;
     if not num_rows_check(template_path, day_path, sheet_name):
-        return False
+        check_result[0] = False
+        check_result[1] = ('1. Количество строк в расписании не совпадает с '
+                           'шаблоном\n')
 
     # Парсим таблицу с расписанием в список
     #   (получаем расписание по РБ);
     day_ab = parse_table(day_path)
     day_wb = day_ab_to_wb(day_ab)
     day_wb = calc_duration(day_wb)
+
     # Первый блок - 'start day' и он не раньше start_time (Например, 4:00)
     if not start_day_check(day_wb, start_time):
-        return False
+        check_result[0] = False
+        check_result[1] = ('2. Либо первый блок не start day, либо он не '
+                           'раньше start_time\n')
+
     # Последний блок - 'sleep' и он не позднее 23:00
     if not start_day_check(day_wb, sleep_time):
-        return False
+        check_result[0] = False
+        check_result[1] = check_result[1] + ('3. Либо последний блок не '
+                                             'sleep, либо он позднее 23:00\n')
+
     # Проверяем, что нет пустых РБ между началом и концом расписания и все
     #   РБ расписания есть в БД;
     all_wb = extract_db(select_column='title', path_db=path_db,
                         table_name=wb_table_name)
     if not check_wb(day_wb, all_wb):
-        return False
+        check_result[0] = False
+        check_result[1] = check_result[1] + ('4. Либо есть пустые РБ между '
+                                             'началом и концом расписания '
+                                             'или не все РБ расписания есть в '
+                                             'БД\n')
     # Проверка: кол-во РБ в расписании не менее десяти (min_wb);
     if not len(day_wb) > min_wb:
-        return False
+        check_result[0] = False
+        check_result[1] = check_result[1] + ('5. Кол-во РБ в расписании '
+                                             'менее десяти\n')
     # В расписании должен быть РБ "plan day", длительностью не менее десяти
     #   минут;
     if not plan_day_exists(day_wb, planning_dur):
-        return False
-    return True
+        check_result[0] = False
+        check_result[1] = check_result[1] + ('6. В расписании должен быть РБ '
+                                             '"plan day", длительностью не '
+                                             'менее десяти минут\n')
+
+    if not check_result[0]:
+        check_result[1] = 'Расписание содержит ошибки:\n' + check_result[1]
+
+    return check_result
 
 
 def num_rows_check(template_path, day_path, sheet_name):

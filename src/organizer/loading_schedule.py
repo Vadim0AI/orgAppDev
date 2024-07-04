@@ -1,5 +1,5 @@
 from src.shared.xlsx_utils.parse_table import parse_table
-from day_ab_to_wb import day_wb_in_db
+from src.organizer.day_ab_to_wb import day_wb_in_db
 from src.organizer.links import path_to_db
 
 

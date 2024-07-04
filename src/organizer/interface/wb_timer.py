@@ -213,7 +213,7 @@ class CountdownTimer(tk.Tk):
             #   если нет - он создается перед открытием
             if not os.path.exists(path_d_future):
                 # Копируем из templates и вставляется с нужным именем
-                source_file_path = path_to_clean_templates + '\\' + 'Day'
+                source_file_path = path_to_clean_templates + '\\' + 'Day.xlsx'
                 shutil.copyfile(source_file_path, path_to_future)
             # Открываем файл
             os.startfile(path_d_future)
