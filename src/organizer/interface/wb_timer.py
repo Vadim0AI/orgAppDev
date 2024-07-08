@@ -16,6 +16,9 @@ from src.organizer.checking_schedule.day.base_check import base_check
 # from src.organizer.loading_schedule import loading_schedule
 from src.organizer.get_days_from_db import get_days_from_db
 from src.organizer.add_day_schedule import add_day_schedule
+from win10toast import ToastNotifier
+from datetime import datetime, timedelta
+
 
 class CountdownTimer(tk.Tk):
     """
@@ -186,35 +189,54 @@ class CountdownTimer(tk.Tk):
         его в БД и выводит сообщение, что все ок. Если расписание не прошло
         проверку - выводит сообщение об ошибке и ее причинах.
         """
+
         # Получаем нужное имя файла, затем путь к нему
         name_file = get_name_day('tomorrow')
         path_d_future: str = path_to_future + '\\' + name_file
 
         # Проверяем, открыт ли уже файл tomorrow
+        # TODO: !!! Функция не сработает, если wps ранее был уже открыт,
+        #  чтобы исправить - нужно закрыть сначала wps, затем уже открыть
+        check_result: list = []
         if is_excel_file_open(path_d_future):
-            # Выполняем проверку новой версии файла;
-            # TODO: Переделать функцию base_check так, чтобы выводился
-            #  кортеж (bool, str) - строка
-            #  должна описывать причину, почему расписание не прошло проверку.
-            if base_check(template_path=path_day_temp, day_path=path_d_future,
-                       sheet_name='wb', start_time='4:00',
-                       sleep_time='21:30', min_wb=10, planning_dur='00:10',
-                       path_db=path_to_db, wb_table_name='wb'):
-                pass
-                # Если все "ок" - сохраняем новую версию файла в БД;
-                add_day_schedule(date, path_schedule, enough_time, first_launch)
-            else:
-                # TODO: ??? ДОБАВИТЬ потом Если НЕ "ок" - предлагаем закрыть
-                #  открытый пользователем файл и возвращаем старую версию в
-                #  соответствии с БД;
-                pass
+            # Выполняем проверку новой версии файла
+            check_result = base_check(template_path=path_day_temp,
+                                      day_path=path_d_future,
+                                      sheet_name='detailed', start_orgapp='4:00',
+                                      sleep_time='21:30', min_wb=10,
+                                      planning_dur='00:10',
+                                      path_db=path_to_db, wb_table_name='wb')
+
+            # Если все "ок" - сохраняем новую версию файла в БД;
+            if check_result[0]:
+                # Сначала получаем завтрашнюю дату
+                date_tomorrow = datetime.now() + timedelta(days=1)
+                # Форматируем дату в нужный формат
+                date_tomorrow = date_tomorrow.strftime('%d.%m.%y')
+                # Сохраняем в БД
+                add_day_schedule(date=date_tomorrow,
+                                 path_schedule=path_d_future,
+                                 enough_time=True, first_launch=False)
+
+            # Создаем экземпляр класса для показа уведомления
+            # TODO: В одном приложении используются разные библиотеки для
+            #  показа уведомлений - поправить потом (не критично)
+            notif = ToastNotifier()
+            # Выводим уведомление о результате проверки
+            notif.show_toast(
+                title="orgApp",
+                msg=check_result[1],
+                duration=10,
+                threaded=True
+            )
+
         else:
             # Проверяем, есть ли файл с нужным именем в папке future,
             #   если нет - он создается перед открытием
             if not os.path.exists(path_d_future):
                 # Копируем из templates и вставляется с нужным именем
                 source_file_path = path_to_clean_templates + '\\' + 'Day.xlsx'
-                shutil.copyfile(source_file_path, path_to_future)
+                shutil.copyfile(source_file_path, path_d_future)
             # Открываем файл
             os.startfile(path_d_future)
 
@@ -225,7 +247,7 @@ class CountdownTimer(tk.Tk):
 
     def wb_action(self):
         # TODO: !!! Похоже он не правильно возвращает вид excel - сдвигая
-        #  значения
+        #  значения (вроде как уже исправил - проверить)
         db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
         wb_excel = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
         # Проверяем, что файл открыт
@@ -242,7 +264,7 @@ class CountdownTimer(tk.Tk):
                 #  просто читает excel)
                 parse_wb(db, wb_excel)
                 notification.notify(
-                    title='Сохранение WB разрешено',
+                    title='orgApp',
                     message='Таблица была успешно сохранена в БД'
                 )
             else:
@@ -395,7 +417,7 @@ def run_wb(dur_min_sec, wb_title):
 
 
 if __name__ == '__main__':
-    app = CountdownTimer('01:00', 'orgApp')
+    app = CountdownTimer('10:00', 'development orgApp')
     app.mainloop()
 
     # # тестируем сохранение wb в БД

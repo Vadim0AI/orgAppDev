@@ -58,13 +58,17 @@ def day_wb_in_db(db: str, id_days: int, day_ab):
     """ Помещает список day_wb в таблицу базы данных day_wb """
     day_wb = day_ab_to_wb(day_ab)
     day_wb = calc_duration(day_wb)
+    # Удаляем первое значение т.к. оно всегда будет с пустым title т.к. первый
+    #   РБ расписания должен быть не с 0:00
+    del day_wb[0]
+    # Запись в БД
     with sqlite3.connect(db) as conn:
         cursor = conn.cursor()
-    for row in day_wb:
-        row = tuple([id_days] + row)
-        cursor.execute(
-            '''INSERT INTO day_wb 
-            (id_days, number, wb, wb_title, fact, fix, duration) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)''', row)
-    # Сохраняем изменения
-    conn.commit()
+        for row in day_wb:
+            row = tuple([id_days] + row)
+            cursor.execute(
+                '''INSERT INTO day_wb 
+                (id_days, number, wb, wb_title, fact, fix, duration) 
+                VALUES (?, ?, ?, ?, ?, ?, ?)''', row)
+        # Сохраняем изменения
+        conn.commit()

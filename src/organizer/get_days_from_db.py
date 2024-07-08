@@ -35,7 +35,10 @@ def get_days_from_db(date: str, version: str = 'last') -> tuple:
             cursor.execute(sql_query, (date, int(version)))
         # Получаем результаты
         rows = cursor.fetchall()
-        return rows[0]
+        if len(rows) == 0:
+            return ()
+        else:
+            return rows[0]
 
 
 if __name__ == '__main__':

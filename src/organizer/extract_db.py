@@ -1,7 +1,7 @@
 import sqlite3
 
 
-def extract_db(select_column: str, path_db: str, table_name: str) -> list:
+def extract_db(select_column: str, path_db: str, table_name: str) -> list[tuple]:
     """ Извлекает из БД список с содержимым.
     path_db (str) - путь к базе данных;
     table_name (str) - имя листа БД;
