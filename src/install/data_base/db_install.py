@@ -26,7 +26,6 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
 # enough_time INTEGER,
 # first_load INTEGER
 
-
 # Создаем таблицу wb (таблица с РБ и разрешениями к ним)
 cursor.execute('''CREATE TABLE IF NOT EXISTS wb
                   (id INTEGER PRIMARY KEY,
@@ -34,7 +33,18 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS wb
                   title TEXT,
                   open TEXT, 
                   close TEXT,
-                  blocked TEXT)''')
+                  blocked TEXT,
+                  shift TEXT,
+                  duration TEXT)''')
+
+# таблица wb (описание):
+# ...
+# shift TEXT - поле для указания того, можно ли сдвигать этот РБ в
+# расписании и тип разрешенного сдвига. Например: 'all' - можно двигать как
+# угодно. 'right' - можно сдвигать только вперед во времени.
+# duration TEXT - можно ли увеличивать / уменьшать длительность РБ в текущем
+# расписании. 'all' - можно как угодно. 'reduce' - общую длительность на
+# день можно только уменьшать.
 
 # Создаем таблицу day_wb (таблица с расписанием по РБ)
 cursor.execute('''CREATE TABLE IF NOT EXISTS day_wb
