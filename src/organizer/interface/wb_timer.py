@@ -10,7 +10,7 @@ from src.organizer.interface.wb_in_excel import wb_db_in_excel
 from src.organizer.parse_wb import parse_wb
 from src.organizer.get_name_day import get_name_day
 from src.organizer.links import (path_to_future, path_to_clean_templates,
-                                 path_to_db, path_day_temp)
+                                 path_to_db, path_day_temp, path_to_now)
 import shutil
 from src.organizer.checking_schedule.day.base_check import base_check
 # from src.organizer.loading_schedule import loading_schedule
@@ -172,10 +172,63 @@ class CountdownTimer(tk.Tk):
         текущего расписания.
 
         """
-        # Проверяем, есть ли расписание на сегодня
+        # Получаем нужное имя файла, затем путь к нему
+        name_file = get_name_day('today')
+        path_d_now: str = path_to_now + '\\' + name_file
 
+        # Проверяем, открыт ли уже файл today
+        # TODO: !!! Функция не сработает, если wps ранее был уже открыт,
+        #  чтобы исправить - нужно закрыть сначала wps, затем уже открыть
+        check_result: list = []
+        if is_excel_file_open(path_d_now):
+            # Выполняем базовую проверку новой версии файла
+            check_result = base_check(template_path=path_day_temp,
+                                      day_path=path_d_now,
+                                      sheet_name='detailed',
+                                      start_orgapp='4:00',
+                                      sleep_time='21:30', min_wb=10,
+                                      planning_dur='00:10',
+                                      path_db=path_to_db, wb_table_name='wb')
+            
+            # TODO: Выполняем продвинутую проверку для сегодняшнего расписания
+            pass
 
-        print("today button pressed")
+            # Если все "ок" - сохраняем новую версию файла в БД;
+            if check_result[0]:
+                # Сначала получаем сегодняшнюю дату
+                date_today = datetime.now()
+                # Форматируем дату в нужный формат
+                date_today = date_today.strftime('%d.%m.%y')
+                # TODO: !!! Учесть first_launch !!!
+                # Сохраняем в БД
+                add_day_schedule(date=date_today,
+                                 path_schedule=path_d_now,
+                                 enough_time=True, first_launch=False)
+
+            # Создаем экземпляр класса для показа уведомления
+            # TODO: В одном приложении используются разные библиотеки для
+            #  показа уведомлений - поправить потом (не критично)
+            notif = ToastNotifier()
+            # Выводим уведомление о результате проверки
+            notif.show_toast(
+                title="orgApp",
+                msg=check_result[1],
+                duration=10,
+                threaded=True
+            )
+
+            # TODO: !!! Перезагружаем orgApp под новое расписание
+            pass
+
+        else:
+            # Проверяем, есть ли файл с нужным именем в папке now,
+            #   если нет - он создается перед открытием
+            if not os.path.exists(path_d_now):
+                # Копируем из templates и вставляется с нужным именем
+                source_file_path = path_to_clean_templates + '\\' + 'Day.xlsx'
+                shutil.copyfile(source_file_path, path_d_now)
+            # Открываем файл
+            os.startfile(path_d_now)
 
 
     def temp_action(self):
