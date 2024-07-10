@@ -6,7 +6,7 @@ def today_check():
     #            start_orgapp, sleep_time,
     #            min_wb, planning_dur, path_db,
     #            wb_table_name)
-
+    # 123 test
     # TODO: Изменить структуру таблицы wb - добавить поле
 
 
