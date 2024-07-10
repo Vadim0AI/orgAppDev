@@ -1,0 +1,6 @@
+Создаст commits.bundle файл, его можно передать по почте
+git bundle create commits.bundle HEAD master
+
+
+Чтобы распаковать коммиты из архива
+git clone commits.bundle -b master

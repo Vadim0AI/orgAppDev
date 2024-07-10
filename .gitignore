@@ -1,0 +1,6 @@
+/venv/
+/.idea/
+# .gitignore
+# /resources/path_to_db/orgApp.path_to_db
+.git
+.git_backup
