@@ -17,7 +17,7 @@ def run_as_admin(command, params=None, folder=None):
 
 # Замените "python" на путь к вашему интерпретатору Python
 command = r"C:\Code\orgApp Dev\venv\Scripts\python.exe"
-script_path = r"C:\Code\orgApp Dev\src\organizer\permissions\orgApp_close.py"
+script_path = r"/src/organizer/permissions/orgApp_close.py"
 params = None  # Можно передать аргументы скрипту, если нужно
 
 run_as_admin(command, script_path, params)
