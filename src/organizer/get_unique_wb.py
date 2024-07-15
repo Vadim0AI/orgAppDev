@@ -30,10 +30,9 @@ def get_unique_wb(day_wb: list) -> dict:
 
         # Проверяем, был ли этот РБ уже внесен в unique_wb.
         if wb_title in unique_wb:
-            # TODO: написать действия
-            pass
+            dur_uniq_wb = duration
+            count_uniq_wb = 1
         else:
-            
             # Получаем внесенную в словарь общую длительность РБ за день.
             dur_uniq_wb = unique_wb[wb_title][0]
             # Прибавляем к ней новое значение;
@@ -46,8 +45,4 @@ def get_unique_wb(day_wb: list) -> dict:
 
         # Обновлем значения словаря
         unique_wb[wb_title] = (dur_uniq_wb, count_uniq_wb)
-
-    
-
     return unique_wb
-
