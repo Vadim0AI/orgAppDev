@@ -14,7 +14,8 @@ from src.organizer.get_days_from_db import get_days_from_db
 from src.shared.get_today_date import get_today_date
 
 
-
+# TODO: Изучить и описать эту функцию
+# TODO: Возможно два параметра здесь не нужны, но это не точно - проверить
 def kill_new_wb(process_new_wb, wb_title, path_to_db):
     time_to_newWB = 120
     global stop_flag
