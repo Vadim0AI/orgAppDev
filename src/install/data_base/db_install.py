@@ -55,7 +55,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS wb
 cursor.execute('''CREATE TABLE IF NOT EXISTS day_wb
                   (id_days INTEGER, 
                   number INTEGER, 
-                  wb TEXT, 
+                  wb_start TEXT, 
                   wb_title TEXT, 
                   fact INTEGER, 
                   fix INTEGER, 

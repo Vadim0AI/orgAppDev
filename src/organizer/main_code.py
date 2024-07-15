@@ -10,6 +10,10 @@ from src.organizer.permissions.orgApp_close import org_app_close
 from src.organizer.permissions.orgApp_blocked_m import ThreadBlocked
 from src.organizer.sleep_pc import sleep_pc
 from src.organizer.links import *
+from src.organizer.get_days_from_db import get_days_from_db
+from src.shared.get_today_date import get_today_date
+
+
 
 def kill_new_wb(process_new_wb, wb_title, path_to_db):
     time_to_newWB = 120
@@ -29,14 +33,7 @@ def kill_new_wb(process_new_wb, wb_title, path_to_db):
 if __name__ == '__main__':
 
     # Запуск защитных модулей, скриптов и проверок ...
-
-    # TODO: Сделать отдельный файл для всех зависимостей (есть модуль links,
-    #  но нужно реализовать безошибочную подгрузку из него позже)
-    # path_to_now = r'C:\Code\orgApp Dev\resources\now'
-    # path_to_history = r'C:\Code\orgApp Dev\resources\history\day'
-    # path_to_future = r'C:\Code\orgApp Dev\resources\future'
-    # path_to_db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
-    # path_to_wb = r'C:\Code\orgApp Dev\resources\settings\work_blocks.xlsx'
+    pass
 
     #   Определить текущее название для файла Day исходя из текущей даты
     name_day = get_name_day(date='today')
@@ -47,22 +44,16 @@ if __name__ == '__main__':
     # Перемещаем старые расписания в папку history. Перемещаем расписание
     #     на сегодня из now в папку future. Проверяем, нужно ли включить режим
     #     ограниченной функциональности.
+    pass
 
-    # TODO: Нужно сначала получить этот id_days на основе последнего
-    #  существующего id_days
-    # TODO: В случае первой записи расписания на день, нужно также добавлять
-    #  строку в таблицу базы данных "days". id_days, date, version, time_change
-    id_days = 1
-
-    # Парсим расписание на день из excel и помещает в БД.
-    # TODO: Возможно это не потребуется т.к. это происходит через кнопки
-    #  интерфейса, просто нужно сделать правильное переключение на нужный
-    #  день. Т.е. при составлении на завтра, все парсится в БД, а от туда
-    #  уже используется
-    # loading_schedule(path_to_db, id_days, path_d_now)
-
-    stop_timer = False
-    stop_new_wb = False
+    # Получить id_days из БД табл. days на основе сегодняшней даты
+    #   возвращает запись по последнему id_days на сегодня
+    id_days = get_days_from_db(date=get_today_date())[0]
+    
+    # Устанавливаем флаги для остановки таймера
+    # TODO: ? Проверить, а нужны ли они уже ?
+    stop_timer: bool = False
+    stop_new_wb: bool = False
 
     # Производим первый запуск РБ
     process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
@@ -72,8 +63,6 @@ if __name__ == '__main__':
         sleep_pc()
 
     # run permissions: closed, open, blocked;
-    # TODO: Похоже closed, open, blocked используют значения не из БД,
-    #  а из excel напрямую - исправить !!!
     org_app_close(path_to_db, wb_title)
     open_file_app_dir_url(wb_title, path_to_db)
 
@@ -97,7 +86,7 @@ if __name__ == '__main__':
             time.sleep(2)
 
         # Запускаем таймер new РБ
-        dur_min_sec = '02:00'  # Время на newWB
+        dur_min_sec = '02:00'  # Время на newWB (на переключение на новый РБ)
         process_new_wb = run_new_wb(dur_min_sec, wb_title)
         # Запускаем таймер следующего РБ
         process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
@@ -137,16 +126,3 @@ if __name__ == '__main__':
                     target=blocked_obj.org_app_blocked,
                     args=(path_to_db, wb_title))
                 thread_blocked.start()
-
-
-
-
-
-        # При запуске изменения текущего расписания или составления расписания
-        # на завтра, вне соответствующего РБ, создается и запускается нужный
-        # РБ.
-
-        # Функционал при нажатии "скорректировать текущее расписание" ...
-        #   ...
-
-
