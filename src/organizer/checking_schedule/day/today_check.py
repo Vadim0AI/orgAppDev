@@ -1,11 +1,9 @@
 from src.organizer.checking_schedule.day import base_check
 from src.organizer.links import path_day_temp
+from src.organizer.get_unique_wb import get_unique_wb
 
-def today_check():
-    # base_check(template_path=path_day_temp, day_path, sheet_name,
-    #            start_orgapp, sleep_time,
-    #            min_wb, planning_dur, path_db,
-    #            wb_table_name)
+def dur_shift_check():
+
     
     # Посчитать кол-во РБ
     # Один большой РБ разделяется на несколько меньших
@@ -22,6 +20,8 @@ def today_check():
     
     # 1. Получаем 1) список со старым расписанием на день; 2) список уникальных РБ с кол-вом
     #   и длительностью, 3) список настроек РБ из БД, 4) список с новым расписанием на день;
+    
+
     # 2. Проходим по списку уникальных РБ и сверяем его с БД wb, там где есть в settings
     #   'shift : right | duraton : fix' выполняем следующий алгоритм для выбранного РБ
     # 3. Получаем из нового расписания список только из этих РБ в соответсвии с их порядком,
