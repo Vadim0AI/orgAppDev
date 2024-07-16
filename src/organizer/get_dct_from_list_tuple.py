@@ -27,3 +27,6 @@ print(result_dct)
 key_index = 2
 result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
 print(result_dct)
+key_index = 3
+result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
+print(result_dct)
