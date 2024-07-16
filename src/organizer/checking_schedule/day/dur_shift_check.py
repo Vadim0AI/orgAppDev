@@ -1,9 +1,11 @@
 from src.organizer.checking_schedule.day import base_check
 from src.organizer.links import path_day_temp
 from src.organizer.get_unique_wb import get_unique_wb
+from src.organizer.get_wb_settings_dct import get_wb_settings_dct
 
+# TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
 
-def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_db: dict[tuple]) -> bool:
+def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: dict[tuple]) -> bool:
     """  
     Проверяет РБ для которых в БД табл. wb указаны специальные настройки, ограничивабщие сдвиги и изменение длительности. Если условия длительности и/или сдвигов нарушены - возвращает False.
 
@@ -15,7 +17,7 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_
     Parameters:
     old_shedule (list[tuple]): старое расписание (содержится в БД табл. dat_wb).
     new_shedule (list[tuple]): новое расписание (до этой проверки содержится пока только в excel и извлекается из него).
-    wb_from_db (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
+    all_wb (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
     
     Returns:
     check_result (bool): Результат проверки
@@ -38,30 +40,22 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_
     old_unique_wb = get_unique_wb(old_shedule)
     new_unique_wb = get_unique_wb(new_shedule)
 
+    # Это шаблон проверяемой настройки
     template_settings: str = 'shift : fix-right | duraton : low-fix'
+    # Превращаем его в словарь. Где ключ - это тип настройки, а значение - это кортеж с значениями настройки).
+    template_settings: dict[tuple] = get_wb_settings_dct(template_settings)
 
-    # 2. Проходим по списку уникальных РБ и сверяем его с БД wb, там где есть в settings 'shift : fix-right | duraton : low-fix' выполняем следующий алгоритм для выбранного РБ
-
-    # Перебираем словарь уникальных РБ нового расписания
+    # Решаем - проверять ли дальше этот РБ на сдвиги и длительность. Для этого узнаем есть ли особая настройка template_settings у РБ. Перебираем словарь уникальных РБ нового расписания и проверяем, соответсвует ли РБ настройкам template_settings.
+    # TODO: Пока функция просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
     for unique_wb in new_unique_wb:
-        # Ищем этот РБ в общем списке рабочих блоков БД табл. wb
-        for 
-        # TODO: Может лучше сразу преобразовать wb_from_db в словарь?
+        # Получаем настройку РБ
+        wb_setting = get_wb_settings_dct(all_wb[unique_wb][6])
+        if wb_settings_check(template_settings, wb_setting):
+            # выполняем проверку по этому РБ
 
 
 
-        # Проверяем, соответсвует ли РБ настройкам template_settings
-        if unique_wb
 
-    # TODO: Доделать и использовать затем функции:
-    wb_settings_check()
-    get_dct_from_list_tuple()
-
-
-    for work_block in wb_from_db:
-        wb_title = work_block[2]
-        wb_setting = work_block[6]
-        wb_settings_check(template_settings, wb_setting)
 
     # 3. Получаем из нового расписания список только из этих РБ в соответсвии с их порядком,
     #   а также отдельный такой список для старого расписания.

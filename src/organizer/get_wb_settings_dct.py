@@ -22,6 +22,7 @@ def get_wb_settings_dct(setting: str) -> Dict[str, Tuple[str, ...]]:
     return setting_dict
 
 
+
 if __name__ == '__main__':
     # Пример 1: Простая строка с одной настройкой
     setting_str1 = 'shift : right'
