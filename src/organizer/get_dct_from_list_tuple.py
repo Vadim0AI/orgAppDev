@@ -7,9 +7,10 @@ def get_dct_from_list_tuple(lst_tpl: list[tuple], key_index: int) -> dict[tuple]
     """
     result_dct = {}
     for tpl in lst_tpl:
-        if key_index < len(tpl):
-            key = tpl[key_index]
-            result_dct[key] = tpl
+        if key_index >= len(tpl):
+            raise IndexError(f"Индекс {key_index} превышает длину кортежа {tpl}")
+        key = tpl[key_index]
+        result_dct[key] = tpl
     return result_dct
 
 
@@ -21,5 +22,8 @@ if __name__ == '__main__':
 ]
 
 key_index = 0
+result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
+print(result_dct)
+key_index = 2
 result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
 print(result_dct)
