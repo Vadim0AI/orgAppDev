@@ -1,14 +1,14 @@
 from src.shared.sum_str_time import sum_str_time
 
 
-def get_unique_wb(day_wb: list) -> dict:
+def get_unique_wb(day_wb: list[tuple]) -> dict:
     """
     Возвращает словарь всех уникальных РБ расписания и суммарную
     длительность по каждому уникальному РБ, а также их кол-во в расписании. 
     'wb_title : (duration, number)'
 
     Parameters:
-    day_wb (list): список кортежей с расписанем на день из БД таблицы day_wb
+    day_wb (list[tuple]): список кортежей с расписанем на день из БД таблицы day_wb
     
     Returns:
     unique_wb (dict):

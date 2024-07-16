@@ -3,14 +3,19 @@ from src.organizer.links import path_day_temp
 from src.organizer.get_unique_wb import get_unique_wb
 
 
-def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_db: list[tuple]) -> bool:
+def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_db: dict[tuple]) -> bool:
     """  
     Проверяет РБ для которых в БД табл. wb указаны специальные настройки, ограничивабщие сдвиги и изменение длительности. Если условия длительности и/или сдвигов нарушены - возвращает False.
+
+    # TODO: !!! Пока реализовано только для настроек 
+    #   'shift : fix-right | duraton : low-fix'
+
+    'shift : fix-right | duraton : low-fix' - эта настройка означает, что сдвигать РБ можно только дальше по времени (либо не сдвигать), а общее время РБ можно только уменьшать или оставить прежним.
 
     Parameters:
     old_shedule (list[tuple]): старое расписание (содержится в БД табл. dat_wb).
     new_shedule (list[tuple]): новое расписание (до этой проверки содержится пока только в excel и извлекается из него).
-    wb_from_db (list[tuple]): список кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
+    wb_from_db (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
     
     Returns:
     check_result (bool): Результат проверки
@@ -27,12 +32,37 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_
     # 
 
     # В интервале от начала одного РБ этого типа, до начала другого РБ этого типа не должно быть длительности большей, чем длительность первого РБ + свободная длительность предыдущих РБ такого типа.
+
     
-    
+     # Получаем словари уникальных РБ для старого и нового расписаний. В значениях по ключу содержится (dur_uniq_wb, count_uniq_wb)
+    old_unique_wb = get_unique_wb(old_shedule)
+    new_unique_wb = get_unique_wb(new_shedule)
+
+    template_settings: str = 'shift : fix-right | duraton : low-fix'
+
+    # 2. Проходим по списку уникальных РБ и сверяем его с БД wb, там где есть в settings 'shift : fix-right | duraton : low-fix' выполняем следующий алгоритм для выбранного РБ
+
+    # Перебираем словарь уникальных РБ нового расписания
+    for unique_wb in new_unique_wb:
+        # Ищем этот РБ в общем списке рабочих блоков БД табл. wb
+        for 
+        # TODO: Может лучше сразу преобразовать wb_from_db в словарь?
 
 
-    # 2. Проходим по списку уникальных РБ и сверяем его с БД wb, там где есть в settings
-    #   'shift : right | duraton : fix' выполняем следующий алгоритм для выбранного РБ
+
+        # Проверяем, соответсвует ли РБ настройкам template_settings
+        if unique_wb
+
+    # TODO: Доделать и использовать затем функции:
+    wb_settings_check()
+    get_dct_from_list_tuple()
+
+
+    for work_block in wb_from_db:
+        wb_title = work_block[2]
+        wb_setting = work_block[6]
+        wb_settings_check(template_settings, wb_setting)
+
     # 3. Получаем из нового расписания список только из этих РБ в соответсвии с их порядком,
     #   а также отдельный такой список для старого расписания.
     # 4. Получаем список интервалов для старого расписания с длительностью нужного РБ в них.
@@ -56,3 +86,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], wb_from_
     #   * функция для разбора settings превращение в словарь из БД табл. wb
 
     pass
+
+
+
+def is_low_right():
+    """  """
