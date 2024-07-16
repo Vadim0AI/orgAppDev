@@ -2,6 +2,7 @@ from src.organizer.checking_schedule.day import base_check
 from src.organizer.links import path_day_temp
 from src.organizer.get_unique_wb import get_unique_wb
 from src.organizer.get_wb_settings_dct import get_wb_settings_dct
+from src.organizer.wb_settings_check import wb_settings_check
 
 # TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
 
@@ -45,6 +46,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
     # Превращаем его в словарь. Где ключ - это тип настройки, а значение - это кортеж с значениями настройки).
     template_settings: dict[tuple] = get_wb_settings_dct(template_settings)
 
+    
+
     # Решаем - проверять ли дальше этот РБ на сдвиги и длительность. Для этого узнаем есть ли особая настройка template_settings у РБ. Перебираем словарь уникальных РБ нового расписания и проверяем, соответсвует ли РБ настройкам template_settings.
     # TODO: Пока функция просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
     for unique_wb in new_unique_wb:
@@ -52,7 +55,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
         wb_setting = get_wb_settings_dct(all_wb[unique_wb][6])
         if wb_settings_check(template_settings, wb_setting):
             # выполняем проверку по этому РБ
-
+            # TODO: Возможно цикл сверху стоит выделить в отдельную функцию / генератор / итератор
+            
 
 
 

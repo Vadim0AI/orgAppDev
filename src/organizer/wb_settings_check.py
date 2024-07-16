@@ -13,7 +13,3 @@ def wb_settings_check(template_settings: dict[tuple], wb_setting: dict[tuple]) -
             return False
         
     return True
-
-
-
-    
