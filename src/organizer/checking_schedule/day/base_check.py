@@ -1,8 +1,8 @@
 from src.shared.xlsx_utils.num_rows_xlsx import num_rows_xlsx
-from src.organizer.day_ab_to_wb import day_ab_to_wb, calc_duration
+from src.db_querys.set.day_ab_to_wb import day_ab_to_wb, calc_duration
 from src.shared.xlsx_utils.parse_table import parse_table
 from datetime import datetime
-from src.organizer.extract_db import extract_db
+from src.db_querys.get.extract_db import extract_db
 
 
 # TODO: Переделать функцию так, чтобы выводился кортеж (bool, str) - строка

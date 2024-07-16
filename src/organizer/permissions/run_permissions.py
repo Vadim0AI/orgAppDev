@@ -1,8 +1,4 @@
-import sqlite3
-from src.organizer.parse_wb import parse_wb
-from src.organizer.permissions.orgApp_close import org_app_close
-from src.organizer.permissions.orgApp_open import open_file_app_dir_url
-
+from src.db_querys.set.parse_wb import parse_wb
 
 # РБ выстраиваются в иерархию наследования. Наибольший приоритет
 #   разрешений имеет сам РБ, затем его РБ. Это позволяет излишне не писать в

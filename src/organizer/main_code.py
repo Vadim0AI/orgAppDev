@@ -1,8 +1,6 @@
 import time
 from get_name_day import get_name_day
 import threading
-from check_availability_day import check_availability_day
-from first_launch import first_launch
 from src.organizer.run_wb_timer import run_wb_timer
 from src.organizer.run_new_wb import run_new_wb
 from src.organizer.permissions.orgApp_open import open_file_app_dir_url
@@ -10,7 +8,7 @@ from src.organizer.permissions.orgApp_close import org_app_close
 from src.organizer.permissions.orgApp_blocked_m import ThreadBlocked
 from src.organizer.sleep_pc import sleep_pc
 from src.organizer.links import *
-from src.organizer.get_days_from_db import get_days_from_db
+from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_today_date import get_today_date
 
 

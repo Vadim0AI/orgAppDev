@@ -1,6 +1,6 @@
 from move_to_history import move_to_history
 from check_availability_day import check_availability_day
-from checking_enough_time import checking_enough_time
+from src.db_querys.get.checking_enough_time import checking_enough_time
 import shutil
 
 

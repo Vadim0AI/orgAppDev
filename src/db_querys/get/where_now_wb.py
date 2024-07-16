@@ -16,7 +16,7 @@ def where_now_wb(id_days):
 
     # Получить список с текущим расписанием по РБ;
     # -- Подключаемся к базе данных SQLite
-    conn = sqlite3.connect(r'C:\Code\orgApp Dev\resources\db\orgApp.db')
+    conn = sqlite3.connect(r'/resources/db/orgApp.db')
     #   Создаем объект курсора
     cursor = conn.cursor()
     # -- Выполняем SQL-запрос для выборки данных

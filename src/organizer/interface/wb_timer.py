@@ -1,4 +1,3 @@
-import time
 import tkinter as tk
 import win32gui
 import win32con
@@ -6,16 +5,15 @@ from src.organizer.get_open_windows_with_processes import get_open_windows_with_
 import os
 from src.organizer.interface.is_excel_file_open import is_excel_file_open
 from plyer import notification
-from src.organizer.interface.wb_in_excel import wb_db_in_excel
-from src.organizer.parse_wb import parse_wb
+from src.db_querys.get.wb_in_excel import wb_db_in_excel
+from src.db_querys.set.parse_wb import parse_wb
 from src.organizer.get_name_day import get_name_day
 from src.organizer.links import (path_to_future, path_to_clean_templates,
                                  path_to_db, path_day_temp, path_to_now)
 import shutil
 from src.organizer.checking_schedule.day.base_check import base_check
 # from src.organizer.loading_schedule import loading_schedule
-from src.organizer.get_days_from_db import get_days_from_db
-from src.organizer.add_day_schedule import add_day_schedule
+from src.db_querys.set.add_day_schedule import add_day_schedule
 from win10toast import ToastNotifier
 from datetime import datetime, timedelta
 

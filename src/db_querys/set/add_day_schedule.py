@@ -1,6 +1,6 @@
-from src.organizer.loading_schedule import loading_schedule
-from src.organizer.get_days_from_db import get_days_from_db
-from src.organizer.add_db_days import add_db_days
+from src.db_querys.set.loading_schedule import loading_schedule
+from src.db_querys.get.get_days_from_db import get_days_from_db
+from src.db_querys.set.add_db_days import add_db_days
 import datetime
 
 

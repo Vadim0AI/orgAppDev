@@ -7,7 +7,7 @@ def checking_enough_time():
     """ Подключается к БД и проверяет по полю compiled_by, было ли
     вчера выделено достаточно времени для составления расписания на сегодня """
     # Подключение к базе данных
-    conn = sqlite3.connect(r'C:\Code\orgApp Dev\resources\db\orgApp.db')
+    conn = sqlite3.connect(r'/resources/db/orgApp.db')
     # Создание объекта курсора
     cur = conn.cursor()
     # Получение строки с сегодняшней датой в формате "dd_mm_yyyy_weekday"

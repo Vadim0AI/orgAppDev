@@ -1,5 +1,5 @@
 import multiprocessing
-from where_now_wb import where_now_wb
+from src.db_querys.get.where_now_wb import where_now_wb
 from src.organizer.interface.wb_timer import run_wb
 
 
