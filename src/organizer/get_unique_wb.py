@@ -1,4 +1,4 @@
-from src.shared.sum_str_time import sum_str_time
+from shared.manipulate_str_time import sum_str_time
 
 
 def get_unique_wb(day_wb: list[tuple]) -> dict:

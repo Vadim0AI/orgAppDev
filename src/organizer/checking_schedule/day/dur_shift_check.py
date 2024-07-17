@@ -5,6 +5,7 @@ from src.organizer.get_wb_settings_dct import get_wb_settings_dct
 from src.organizer.wb_settings_check import wb_settings_check
 from shared.filtering_list_tpl import filtering_list_tpl
 from datetime import time, datetime
+from shared import manipulate_str_time
 
 # TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
 # TODO: Пока функция get_wb_settings_dct() просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
@@ -58,22 +59,26 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
             old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_shedule, index_filter=3, value_filter=unique_wb[3])
             new_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=new_shedule, index_filter=3, value_filter=unique_wb[3])
             
-            free_duration: time = datetime.strptime('00:00', '%H:%M').time()
-
-            # Перебираем интервалы нового расписания
-            for work_block_new in new_interval_wb:
-                 # Перебираем интервалы старого расписания
-                 for work_block_index in range(len(old_interval_wb)):
+            free_duration: str = '00:00'
+            
+            # Перебираем интервалы старого расписания
+            for work_block_index in range(len(old_interval_wb)):
+                 # Перебираем интервалы нового расписания
+                 for work_block_new in new_interval_wb:
                     # Преобразуем строки времени в объект datetime.time
                     start_time_new = datetime.strptime(work_block_new[2], '%H:%M').time()
                     start_time_old = datetime.strptime(old_interval_wb[work_block_index][2], '%H:%M').time()
                     end_time_old = datetime.strptime(old_interval_wb[work_block_index+1][2], '%H:%M').time()
 
+                    # Получае duration из текущего РБ старого расписания
+                    old_wb_dur: str = old_interval_wb[work_block_index][6]
+                    # Пополняем free_duration в соответсвии с длительностью РБ в старом расписании
+                    free_duration = manipulate_str_time(free_duration, old_wb_dur, '+')
+
                     # Выполняем проверку на вхождение
                     if (start_time_old < start_time_new) and (start_time_new < end_time_old):
-                        pass
-                    
-                
+                        # Получаем длительность РБ из старого расписания
+                        new_wb_dur = work_block_new[6]
 
 
 
