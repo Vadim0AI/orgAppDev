@@ -31,7 +31,7 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
     check_result (bool): Результат проверки
     """
 
-     # Получаем словари уникальных РБ для старого и нового расписаний. В значениях по ключу содержится (dur_uniq_wb, count_uniq_wb)
+    # Получаем словари уникальных РБ для старого и нового расписаний. В значениях по ключу содержится (dur_uniq_wb, count_uniq_wb)
     old_unique_wb = get_unique_wb(old_shedule)
     new_unique_wb = get_unique_wb(new_shedule)
 
@@ -59,40 +59,60 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
             old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_shedule, index_filter=3, value_filter=unique_wb[3])
             new_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=new_shedule, index_filter=3, value_filter=unique_wb[3])
             
-            free_duration: str = '00:00'
+            # Длительность РБ которая перемещается в следующий(ие) РБ, если предыдущем интервале старого расписания длительности стало меньше.
+            moving_duration: str = '00:00'
             
             # Перебираем интервалы старого расписания
-            for work_block_index in range(len(old_interval_wb)):
-                 # Перебираем интервалы нового расписания
-                 for work_block_new in new_interval_wb:
-                    # Преобразуем строки времени в объект datetime.time
-                    start_time_new = datetime.strptime(work_block_new[2], '%H:%M').time()
-                    start_time_old = datetime.strptime(old_interval_wb[work_block_index][2], '%H:%M').time()
-                    end_time_old = datetime.strptime(old_interval_wb[work_block_index+1][2], '%H:%M').time()
+            for old_wb_index in range(len(old_interval_wb)):
+                
+                # Сумма длительнсти рабочих блоков нового расписания, которые находятся внутри текущего интервала старого расписания.
+                new_dur_inside: str = '00:00'
 
-                    # Получае duration из текущего РБ старого расписания
-                    old_wb_dur: str = old_interval_wb[work_block_index][6]
-                    # Пополняем free_duration в соответсвии с длительностью РБ в старом расписании
-                    free_duration = manipulate_str_time(free_duration, old_wb_dur, '+')
+                # Перебираем интервалы нового расписания
+                for new_wb_index in range(len(new_interval_wb)):
+                    work_block_new = new_interval_wb[new_wb_index]
+
+                    # Преобразуем строки времени в объект datetime.time
+                    # Время начала рабочего блока из нового расписания
+                    start_time_new = datetime.strptime(work_block_new[2], '%H:%M').time()
+                    # Время окончания рабочего блока из нового расписания
+                    end_time_new_str: str = manipulate_str_time(start_time_new, work_block_new[6], '+')
+                    end_time_new_obj = datetime.strptime(end_time_new_str, '%H:%M').time()
+                    # Время начала интервала старого расписания
+                    start_time_old = datetime.strptime(old_interval_wb[old_wb_index][2], '%H:%M').time()
+                    # Время окончания интервала старого расписания
+                    end_time_old = datetime.strptime(old_interval_wb[old_wb_index+1][2], '%H:%M').time()
 
                     # Выполняем проверку на вхождение
-                    if (start_time_old < start_time_new) and (start_time_new < end_time_old):
-                        # Получаем длительность РБ из старого расписания
-                        new_wb_dur = work_block_new[6]
+                    if (start_time_old <= start_time_new) and (start_time_new <= end_time_old):
 
+                        # Проверяем, находится ли РБ из нового расписания на стыке нескольких интервалов старого расписания.
+                        if end_time_new_obj > end_time_old:
 
+                            # Создаю новый РБ на основе текущего, с началом равным окончанию интервала.
+                            created_wb = list(work_block_new)
+                            created_wb[2] = old_interval_wb[old_wb_index+1]
+                            created_wb = tuple(created_wb)
+                            # Вставляем в new_interval_wb (список кортежей с РБ одного типа нового расписания) новый РБ, сразу после текущего.
+                            new_interval_wb.insert(new_wb_index+1, created_wb)
 
-            # 5. Проходимся по списку с уникальными РБ нового расписания и проверяем вхождение в интевал старого расписания. 
-            # Для тех РБ которые входят в этот интервал, суммируем длительность и сверяем ее с длительностью РБ интервала (! не дительность самого 
-            # интервала) из старого расписания. 
-            # 6. Если длительность старого меньше, чем сумма этих РБ + free_duration - возвращаем False, а также данные о месте ошибки.
-            #   Иначе - вычисляем разницу и сохраняем в free_duration. 
-            #   Изначально free_duration был установлен в 0.
-            # 7. Продолжаем так, пока не пройдемся по всем РБ нового расписания этого типа.
-            # 8. Затем возвращаемся к п.2, пока не пройдем так полный список уникальных РБ.
-            # 9. Если все ок - то возвращаем True.
+                            # Считаю длительность первой части текущего РБ и прибавляю ее к new_dur_inside
+                            first_part_dur = manipulate_str_time(old_interval_wb[old_wb_index+1][2], work_block_new[2], '-')
+                            new_dur_inside = manipulate_str_time(new_dur_inside, first_part_dur, '+')
+                        else:
+                            # Добавляю значение к new_dur_inside
+                            new_dur_inside = manipulate_str_time(new_dur_inside, work_block_new[6], '+')
+                        
+                
+                # Разрешенная суммарная длительность рабочих блоков в текущем интервале.
+                allowed_dur = manipulate_str_time(old_interval_wb[old_wb_index][6], moving_duration, '+')
 
+                # Проверяем, было ли нарушено правило настройки для текущего интервала старого расписания. Если new_dur_inside больше чем (длительность_РБ_старого_расписания + moving_duration), то False.
+                if datetime.strptime(new_dur_inside, '%H:%M').time() > datetime.strptime(allowed_dur, '%H:%M').time():
+                    return (False, f'Превышена длительность рабочих блоков(а) в интервале с {old_interval_wb[old_wb_index][2]}, до {old_interval_wb[old_wb_index+1][2]}')
 
+                # Обновляем moving_duration. Для этого moving_duration = длительность_РБ_старого_расписания + moving_duration - new_dur_inside
+                moving_duration = manipulate_str_time(moving_duration, new_dur_inside, '-')
+                moving_duration = manipulate_str_time(moving_duration, old_interval_wb[old_wb_index][6], '+')
 
-
-
+    return (True, '')   # Если все ок - возвращаем True.      
