@@ -16,6 +16,7 @@ from src.organizer.checking_schedule.day.base_check import base_check
 from src.db_querys.set.add_day_schedule import add_day_schedule
 from win10toast import ToastNotifier
 from datetime import datetime, timedelta
+from src.organizer.checking_schedule.day.base_check import base_check
 
 
 class CountdownTimer(tk.Tk):
@@ -189,6 +190,8 @@ class CountdownTimer(tk.Tk):
                                       path_db=path_to_db, wb_table_name='wb')
             
             # TODO: Выполняем продвинутую проверку для сегодняшнего расписания
+            # base_check()
+            # check_result
             pass
 
             # Если все "ок" - сохраняем новую версию файла в БД;
@@ -196,6 +199,7 @@ class CountdownTimer(tk.Tk):
                 # Сначала получаем сегодняшнюю дату
                 date_today = datetime.now()
                 # Форматируем дату в нужный формат
+                # TODO: Может r поставить r'%d.%m.%y'?
                 date_today = date_today.strftime('%d.%m.%y')
                 # TODO: !!! Учесть first_launch !!!
                 # Сохраняем в БД

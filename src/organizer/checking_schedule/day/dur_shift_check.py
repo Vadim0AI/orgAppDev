@@ -89,9 +89,16 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
                         # Проверяем, находится ли РБ из нового расписания на стыке нескольких интервалов старого расписания.
                         if end_time_new_obj > end_time_old:
 
-                            # Создаю новый РБ на основе текущего, с началом равным окончанию интервала.
-                            created_wb = list(work_block_new)
+                            # Создаю новый РБ на основе текущего, с началом равным окончанию интервала и с остаточной длительностью.
+                            created_wb: list = list(work_block_new)
+                            # Изначальное время начала РБ 'hh:mm'
+                            old_beginnin_wb: str = work_block_new[2]    
                             created_wb[2] = old_interval_wb[old_wb_index+1]
+                           
+                            # Длительность РБ в рамках текущего интервала = Время начала следующего интервала - Изначальное время начала РБ. 'hh:mm'.
+                            dur_wb_cur_interval: str = manipulate_str_time(created_wb[2], old_beginnin_wb, '-')
+                             # Остаточная длительность = Изначальная длительность РБ - Длительность РБ в рамках текущего интервала. 'hh:mm'
+                            created_wb[6] = manipulate_str_time(work_block_new[6], dur_wb_cur_interval, '-')
                             created_wb = tuple(created_wb)
                             # Вставляем в new_interval_wb (список кортежей с РБ одного типа нового расписания) новый РБ, сразу после текущего.
                             new_interval_wb.insert(new_wb_index+1, created_wb)
