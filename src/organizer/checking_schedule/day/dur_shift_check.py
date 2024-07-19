@@ -3,15 +3,15 @@ from src.organizer.links import path_day_temp
 from src.organizer.get_unique_wb import get_unique_wb
 from src.organizer.get_wb_settings_dct import get_wb_settings_dct
 from src.organizer.wb_settings_check import wb_settings_check
-from shared.filtering_list_tpl import filtering_list_tpl
+from src.shared.filtering_list_tpl import filtering_list_tpl
 from datetime import time, datetime
-from shared import manipulate_str_time
+from src.shared import manipulate_str_time
 
 # TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
 # TODO: Пока функция get_wb_settings_dct() просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
 
 
-def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: dict[tuple]) -> tuple[bool, str]:
+def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: dict[tuple]) -> list[bool, str]:
     """  
     Проверяет РБ для которых в БД табл. wb указаны специальные настройки, ограничивабщие сдвиги и изменение длительности. Если условия длительности и/или сдвигов нарушены - возвращает False.
 
@@ -97,7 +97,7 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
                            
                             # Длительность РБ в рамках текущего интервала = Время начала следующего интервала - Изначальное время начала РБ. 'hh:mm'.
                             dur_wb_cur_interval: str = manipulate_str_time(created_wb[2], old_beginnin_wb, '-')
-                             # Остаточная длительность = Изначальная длительность РБ - Длительность РБ в рамках текущего интервала. 'hh:mm'
+                             # Остаточная длительность РБ = Изначальная длительность РБ - Длительность РБ в рамках текущего интервала. 'hh:mm'
                             created_wb[6] = manipulate_str_time(work_block_new[6], dur_wb_cur_interval, '-')
                             created_wb = tuple(created_wb)
                             # Вставляем в new_interval_wb (список кортежей с РБ одного типа нового расписания) новый РБ, сразу после текущего.
@@ -116,10 +116,10 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
 
                 # Проверяем, было ли нарушено правило настройки для текущего интервала старого расписания. Если new_dur_inside больше чем (длительность_РБ_старого_расписания + moving_duration), то False.
                 if datetime.strptime(new_dur_inside, '%H:%M').time() > datetime.strptime(allowed_dur, '%H:%M').time():
-                    return (False, f'Превышена длительность рабочих блоков(а) в интервале с {old_interval_wb[old_wb_index][2]}, до {old_interval_wb[old_wb_index+1][2]}')
+                    return [False, f'Превышена длительность рабочих блоков(а) в интервале с {old_interval_wb[old_wb_index][2]}, до {old_interval_wb[old_wb_index+1][2]}']
 
                 # Обновляем moving_duration. Для этого moving_duration = длительность_РБ_старого_расписания + moving_duration - new_dur_inside
                 moving_duration = manipulate_str_time(moving_duration, new_dur_inside, '-')
                 moving_duration = manipulate_str_time(moving_duration, old_interval_wb[old_wb_index][6], '+')
 
-    return (True, '')   # Если все ок - возвращаем True.      
+    return [True, 'Проверка на длительность и сдвиги успешно пройдена!']   # Если все ок - возвращаем True.      

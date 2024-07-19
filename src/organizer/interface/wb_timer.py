@@ -1,9 +1,9 @@
 import tkinter as tk
 import win32gui
 import win32con
-from src.organizer.get_open_windows_with_processes import get_open_windows_with_processes
 import os
 from src.organizer.interface.is_excel_file_open import is_excel_file_open
+from src.organizer.get_open_windows_with_processes import get_open_windows_with_processes
 from plyer import notification
 from src.db_querys.get.wb_in_excel import wb_db_in_excel
 from src.db_querys.set.parse_wb import parse_wb
@@ -11,13 +11,12 @@ from src.organizer.get_name_day import get_name_day
 from src.organizer.links import (path_to_future, path_to_clean_templates,
                                  path_to_db, path_day_temp, path_to_now)
 import shutil
-from src.organizer.checking_schedule.day.base_check import base_check
 # from src.organizer.loading_schedule import loading_schedule
 from src.db_querys.set.add_day_schedule import add_day_schedule
 from win10toast import ToastNotifier
 from datetime import datetime, timedelta
 from src.organizer.checking_schedule.day.base_check import base_check
-
+from src.organizer.checking_schedule.day.dur_shift_check import dur_shift_check
 
 class CountdownTimer(tk.Tk):
     """
@@ -178,10 +177,10 @@ class CountdownTimer(tk.Tk):
         # Проверяем, открыт ли уже файл today
         # TODO: !!! Функция не сработает, если wps ранее был уже открыт,
         #  чтобы исправить - нужно закрыть сначала wps, затем уже открыть
-        check_result: list = []
+        check_result: list[bool, str] = [False, '']
         if is_excel_file_open(path_d_now):
             # Выполняем базовую проверку новой версии файла
-            check_result = base_check(template_path=path_day_temp,
+            check_result_one = base_check(template_path=path_day_temp,
                                       day_path=path_d_now,
                                       sheet_name='detailed',
                                       start_orgapp='4:00',
@@ -190,10 +189,11 @@ class CountdownTimer(tk.Tk):
                                       path_db=path_to_db, wb_table_name='wb')
             
             # TODO: Выполняем продвинутую проверку для сегодняшнего расписания
-            # base_check()
-            # check_result
-            pass
+            # check_result_two = dur_shift_check(old_shedule=, new_shedule=, all_wb=)
 
+            # Получаем результат с учетом обоих проверок
+            check_result[0] = check_result_one[0] and check_result_two[0]
+            check_result[1] = check_result_one[1] + '\n' + check_result_two[2]
             # Если все "ок" - сохраняем новую версию файла в БД;
             if check_result[0]:
                 # Сначала получаем сегодняшнюю дату
