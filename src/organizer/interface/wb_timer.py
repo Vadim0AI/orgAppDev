@@ -20,7 +20,7 @@ from src.organizer.checking_schedule.day.dur_shift_check import dur_shift_check
 from src.shared.xlsx_utils.parse_table import parse_table
 from src.db_querys.get.extract_db import extract_db
 from src.db_querys.get.get_days_from_db import get_days_from_db
-
+from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
 
 
 class CountdownTimer(tk.Tk):
@@ -180,7 +180,7 @@ class CountdownTimer(tk.Tk):
         path_d_now: str = path_to_now + '\\' + name_file
 
         # Проверяем, открыт ли уже файл today
-        check_result: list[bool, str] = [False, '']
+        check_result: list = [False, '']
         if is_excel_file_open(path_d_now):
             # Выполняем базовую проверку новой версии файла
             check_result_one = base_check(template_path=path_day_temp,
@@ -197,14 +197,17 @@ class CountdownTimer(tk.Tk):
 
             id_day = get_days_from_db(today_date, 'last')[0]
 
-            # Извлекаем old_shedule, new_shedule, all_wb в виде списков кортежей,
-            #   в целях дальнейшей проверки нового расписания
-            old_shedule: list[tuple] =
+            # Извлекаем old_shedule, new_shedule в виде списков кортежей, а all_wb
+            #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
+            old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
+                                                  where_condition=f'id_days = {id_day}', order_by='number')
             new_shedule: list[tuple] = parse_table(path_d_now)
             all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
+            all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
 
-            # TODO: Выполняем продвинутую проверку для сегодняшнего расписания
-            check_result_two = dur_shift_check(old_shedule=, new_shedule=, all_wb=)
+            # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания
+            check_result_two = dur_shift_check(old_shedule=old_shedule, new_shedule=new_shedule, all_wb=all_wb)
+
 
             # Получаем результат с учетом обоих проверок
             check_result[0] = check_result_one[0] and check_result_two[0]

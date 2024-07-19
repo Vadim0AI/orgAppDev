@@ -5,7 +5,7 @@ from src.organizer.get_wb_settings_dct import get_wb_settings_dct
 from src.organizer.wb_settings_check import wb_settings_check
 from src.shared.filtering_list_tpl import filtering_list_tpl
 from datetime import time, datetime
-from src.shared import manipulate_str_time
+from src.shared.manipulate_str_time import manipulate_str_time
 
 # TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
 # TODO: Пока функция get_wb_settings_dct() просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
@@ -53,7 +53,7 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
 
             # Проверяем общую длительность РБ
             if dur_new > dur_old:
-                return (False, f'Общая длительность РБ {unique_wb} ({new_unique_wb[unique_wb][0]}) превышает значение в страром расписании ({old_unique_wb[unique_wb][0]})')
+                return [False, f'Общая длительность РБ {unique_wb} ({new_unique_wb[unique_wb][0]}) превышает значение в страром расписании ({old_unique_wb[unique_wb][0]})']
 
             # Получаем списки интервалов для одного РБ.
             old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_shedule, index_filter=3, value_filter=unique_wb[3])

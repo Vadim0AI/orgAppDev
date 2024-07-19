@@ -1,7 +1,7 @@
 from typing import Dict, Tuple
 
 
-def get_wb_settings_dct(setting: str) -> Dict[str, Tuple[str, ...]]:
+def get_wb_settings_dct(setting: str) -> Dict[Tuple[str, ...]]:
     """ Принимает строку из БД wb, поле settings, парсит ее и превращает в словарь.
     При этом к БД напрямую не обращается.
 
