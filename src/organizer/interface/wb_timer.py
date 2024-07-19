@@ -195,7 +195,7 @@ class CountdownTimer(tk.Tk):
             # Форматируем дату в нужный формат 'dd.mm.yy'
             today_date = today_date.strftime('%d.%m.%y')
 
-            get_days_from_db(today_date, 'last')
+            id_day = get_days_from_db(today_date, 'last')[0]
 
             # Извлекаем old_shedule, new_shedule, all_wb в виде списков кортежей,
             #   в целях дальнейшей проверки нового расписания

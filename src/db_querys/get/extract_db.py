@@ -1,10 +1,10 @@
 import sqlite3
 
-
-def extract_db(select_column: str, path_db: str, table_name: str, order_by: str = None) -> list[tuple]:
+def extract_db(select_column: str, path_db: str, table_name: str, where_condition: str = None, order_by: str = None) -> list[tuple]:
     """ Извлекает из БД список с содержимым.
     path_db (str) - путь к базе данных;
     table_name (str) - имя таблицы БД;
+    where_condition (str) - условие WHERE для фильтрации данных (опционально);
     order_by (str) - имя столбца для сортировки (опционально).
     """
 
@@ -13,11 +13,12 @@ def extract_db(select_column: str, path_db: str, table_name: str, order_by: str 
         # Создаем объект курсора
         cursor = conn.cursor()
 
-        # Формируем SQL-запрос с учетом возможной сортировки
+        # Формируем SQL-запрос с учетом возможных условий WHERE и сортировки
+        query = f'SELECT {select_column} FROM {table_name}'
+        if where_condition:
+            query += f' WHERE {where_condition}'
         if order_by:
-            query = f'SELECT {select_column} FROM {table_name} ORDER BY {order_by}'
-        else:
-            query = f'SELECT {select_column} FROM {table_name}'
+            query += f' ORDER BY {order_by}'
 
         # Используем курсор для выполнения запроса
         cursor.execute(query)
