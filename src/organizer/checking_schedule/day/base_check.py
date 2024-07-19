@@ -29,14 +29,6 @@ def base_check(template_path: str, day_path: str, sheet_name: str,
     # Результат проверки (пока пустой)
     check_result: list = [True, '']
 
-    # TODO: [~] base_check()
-    # Проверяем кол-во строк в файле (должно совпадать с шаблоном) - для
-    #   этого обращаемся к детализированным версиям расписаний;
-    if not num_rows_check(template_path, day_path, sheet_name):
-        check_result[0] = False
-        check_result[1] = ('1. Количество строк в расписании не совпадает с '
-                           'шаблоном\n')
-
     # Парсим таблицу с расписанием в список
     #   (получаем расписание по РБ);
     day_ab = parse_table(day_path)
@@ -44,6 +36,18 @@ def base_check(template_path: str, day_path: str, sheet_name: str,
     day_wb = calc_duration(day_wb)
     del day_wb[0]
 
+    if len(day_wb) == 0:
+        check_result[0] = False
+        check_result[1] = ('Расписание пустое!')
+        return check_result
+
+    # TODO: [~] base_check()
+    # Проверяем кол-во строк в файле (должно совпадать с шаблоном) - для
+    #   этого обращаемся к детализированным версиям расписаний;
+    if not num_rows_check(template_path, day_path, sheet_name):
+        check_result[0] = False
+        check_result[1] = ('1. Количество строк в расписании не совпадает с '
+                           'шаблоном\n')
 
     # Первый блок - 'start day' и он не раньше start_orgapp (Например, 4:00)
     if not start_day_check(day_wb, start_orgapp):
@@ -117,6 +121,7 @@ def start_day_check(day_wb: list, start_orgapp: str = '4:00') -> bool:
     Проверяет, что первый рабочий блок - 'start day' и он не раньше start_time.
     ...
      """
+
     # Преобразовать start_time и first_wb_time в формат datetime для сравнения
     start_orgapp = datetime.strptime(start_orgapp, "%H:%M")
     first_wb_time = datetime.strptime(day_wb[0][1], "%H:%M")

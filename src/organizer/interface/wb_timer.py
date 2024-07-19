@@ -190,28 +190,30 @@ class CountdownTimer(tk.Tk):
                                       sleep_time='21:30', min_wb=10,
                                       planning_dur='00:10',
                                       path_db=path_to_db, wb_table_name='wb')
-            # Получаем текущую дату
-            today_date = datetime.now()
-            # Форматируем дату в нужный формат 'dd.mm.yy'
-            today_date = today_date.strftime('%d.%m.%y')
 
-            id_day = get_days_from_db(today_date, 'last')[0]
+            if check_result[0]:
+                # Получаем текущую дату
+                today_date = datetime.now()
+                # Форматируем дату в нужный формат 'dd.mm.yy'
+                today_date = today_date.strftime('%d.%m.%y')
 
-            # Извлекаем old_shedule, new_shedule в виде списков кортежей, а all_wb
-            #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
-            old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
-                                                  where_condition=f'id_days = {id_day}', order_by='number')
-            new_shedule: list[tuple] = parse_table(path_d_now)
-            all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
-            all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
+                id_day = get_days_from_db(today_date, 'last')[0]
 
-            # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания
-            check_result_two = dur_shift_check(old_shedule=old_shedule, new_shedule=new_shedule, all_wb=all_wb)
+                # Извлекаем old_shedule, new_shedule в виде списков кортежей, а all_wb
+                #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
+                old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
+                                                      where_condition=f'id_days = {id_day}', order_by='number')
+                new_shedule: list[tuple] = parse_table(path_d_now)
+                all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
+                all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
 
+                # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания
+                check_result_two = dur_shift_check(old_shedule=old_shedule, new_shedule=new_shedule, all_wb=all_wb)
 
-            # Получаем результат с учетом обоих проверок
-            check_result[0] = check_result_one[0] and check_result_two[0]
-            check_result[1] = check_result_one[1] + '\n' + check_result_two[2]
+                # Получаем результат с учетом обоих проверок
+                check_result[0] = check_result_one[0] and check_result_two[0]
+                check_result[1] = check_result_one[1] + '\n' + check_result_two[2]
+
             # Если все "ок" - сохраняем новую версию файла в БД;
             if check_result[0]:
                 # Сначала получаем сегодняшнюю дату
@@ -226,8 +228,6 @@ class CountdownTimer(tk.Tk):
                                  enough_time=True, first_launch=False)
 
             # Создаем экземпляр класса для показа уведомления
-            # TODO: В одном приложении используются разные библиотеки для
-            #  показа уведомлений - поправить потом (не критично)
             notif = ToastNotifier()
             # Выводим уведомление о результате проверки
             notif.show_toast(

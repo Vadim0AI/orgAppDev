@@ -19,14 +19,14 @@ if __name__ == '__main__':
     (1, 'a', 'b'),
     (2, 'c', 'd'),
     (3, 'e', 'f')
-]
+    ]
 
-key_index = 0
-result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
-print(result_dct)
-key_index = 2
-result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
-print(result_dct)
-key_index = 3
-result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
-print(result_dct)
+    key_index = 0
+    result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
+    print(result_dct)
+    key_index = 2
+    result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
+    print(result_dct)
+    key_index = 3
+    result_dct = get_dct_from_list_tuple(lst_tpl, key_index)
+    print(result_dct)
