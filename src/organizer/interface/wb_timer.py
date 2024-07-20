@@ -179,31 +179,45 @@ class CountdownTimer(tk.Tk):
         name_file = get_name_day('today')
         path_d_now: str = path_to_now + '\\' + name_file
 
-        # Проверяем, открыт ли уже файл today
+        # Результат проверки
         check_result: list = [False, '']
-        if is_excel_file_open(path_d_now):
-            # Выполняем базовую проверку новой версии файла
-            check_result_one = base_check(template_path=path_day_temp,
-                                      day_path=path_d_now,
-                                      sheet_name='detailed',
-                                      start_orgapp='4:00',
-                                      sleep_time='21:30', min_wb=10,
-                                      planning_dur='00:10',
-                                      path_db=path_to_db, wb_table_name='wb')
 
-            if check_result[0]:
+        # Проверяем, открыт ли уже файл today
+        if is_excel_file_open(path_d_now):
+
+            new_shedule: list[tuple] = parse_table(path_d_now)
+            # Проверяем, что расписание не пустое
+            if len(new_shedule) != 0:
+
+                # Выполняем базовую проверку новой версии файла
+                check_result_one = base_check(template_path=path_day_temp,
+                                          day_path=path_d_now,
+                                          sheet_name='detailed',
+                                          start_orgapp='4:00',
+                                          sleep_time='21:30', min_wb=10,
+                                          planning_dur='00:10',
+                                          path_db=path_to_db, wb_table_name='wb')
+
                 # Получаем текущую дату
                 today_date = datetime.now()
                 # Форматируем дату в нужный формат 'dd.mm.yy'
                 today_date = today_date.strftime('%d.%m.%y')
 
-                id_day = get_days_from_db(today_date, 'last')[0]
+                # TODO: Вот здесь как раз и определяется факт режима
+                #  ограниченной функциональности и соответственно должна быть
+                #  проверка на то, что в расписании НЕ добавлены РБ с
+                #  настройкой, запрещающей это делать
+                day_from_db: tuple = get_days_from_db(today_date, 'last')
+                if len(day_from_db) == 0:
+                    id_day = 1
+                else:
+                    id_day = day_from_db[0]
 
-                # Извлекаем old_shedule, new_shedule в виде списков кортежей, а all_wb
+                # Извлекаем old_sheduleв виде списка кортежей, а all_wb
                 #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
                 old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
                                                       where_condition=f'id_days = {id_day}', order_by='number')
-                new_shedule: list[tuple] = parse_table(path_d_now)
+
                 all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
                 all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
 
@@ -213,6 +227,9 @@ class CountdownTimer(tk.Tk):
                 # Получаем результат с учетом обоих проверок
                 check_result[0] = check_result_one[0] and check_result_two[0]
                 check_result[1] = check_result_one[1] + '\n' + check_result_two[2]
+            else:
+                check_result[0] = False
+                check_result[1] = 'Новое расписание пустое!'
 
             # Если все "ок" - сохраняем новую версию файла в БД;
             if check_result[0]:
