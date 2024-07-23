@@ -178,7 +178,7 @@ class CountdownTimer(tk.Tk):
         # Получаем нужное имя файла, затем путь к нему
         name_file = get_name_day('today')
         path_d_now: str = path_to_now + '\\' + name_file
-
+  
         # Результат проверки
         check_result: list = [False, '']
 
@@ -217,7 +217,7 @@ class CountdownTimer(tk.Tk):
                 #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
                 old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
                                                       where_condition=f'id_days = {id_day}', order_by='number')
-
+ 
                 all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
                 all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
 
