@@ -1,6 +1,7 @@
 import multiprocessing
 from src.db_querys.get.where_now_wb import where_now_wb
 from src.organizer.interface.wb_timer import run_wb
+from src.organizer.sleep_pc import sleep_pc
 
 
 def run_wb_timer(id_days):
@@ -8,7 +9,7 @@ def run_wb_timer(id_days):
     #   отсеивая по id_days ...
     now_wb = where_now_wb(id_days)
     if now_wb == 'sleep':
-        pass  # TODO: дописать - что делать, если время sleep ...
+        sleep_pc()
     wb_row, delta_sec = now_wb
 
     #   Для этого длительность РБ
