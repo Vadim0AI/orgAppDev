@@ -15,7 +15,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
                   version INTEGER,  
                   time_change INTEGER,
                   enough_time INTEGER,
-                  first_load INTEGER)''')
+                  first_launch INTEGER)''')
 
 # таблица days (описание):
 # id_days INTEGER PRIMARY KEY,
@@ -24,7 +24,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
 # time_change INTEGER - время внесения нового расписания в таблицу,
 #   в формате '%H:%M:%S %d.%m.%y'
 # enough_time INTEGER,
-# first_load INTEGER:
+# first_launch INTEGER:
     # 0 - функция first_launch еше не была выполнена ни разу за день;
     # 1 - была выполнена функция first_launch, которая перемещает файлы в папки history из now, и в now из tomorrow, а также проверяет есть ли сейчас режим ограниченной функциональности (но при этом сам статус наличия этого режима здесь не отображается).
     
