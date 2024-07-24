@@ -14,7 +14,7 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
                   date INTEGER, 
                   version INTEGER,  
                   time_change INTEGER,
-                  enough_time INTEGER,
+                  limited_status TEXT,
                   first_launch INTEGER)''')
 
 # таблица days (описание):
@@ -23,7 +23,11 @@ cursor.execute('''CREATE TABLE IF NOT EXISTS days
 # version INTEGER - от 1 до беск.
 # time_change INTEGER - время внесения нового расписания в таблицу,
 #   в формате '%H:%M:%S %d.%m.%y'
-# enough_time INTEGER,
+# limited_status TEXT - статус режима ограниченной функциональности:
+    # 1. 'indefinite' - неопределенное значение;
+    # 2. 'only shedule' - расписания на сегодня нет - можно только составлять расписание;
+    # 3. 'no leisure' - расписание не было составлено заранее на сегодня, его составили сегодня же. Поэтому запрещено добавлять развлекательные РБ и другие подобные.
+    # 4. 'no limited' - никаких ограничений на добавление РБ. Расписание на сегодня было составлено заранее, как минимуум еще вчера.
 # first_launch INTEGER:
     # 0 - функция first_launch еше не была выполнена ни разу за день;
     # 1 - была выполнена функция first_launch, которая перемещает файлы в папки history из now, и в now из tomorrow, а также проверяет есть ли сейчас режим ограниченной функциональности (но при этом сам статус наличия этого режима здесь не отображается).

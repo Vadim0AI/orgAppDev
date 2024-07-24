@@ -10,6 +10,7 @@ from src.organizer.sleep_pc import sleep_pc
 from src.organizer.links import *
 from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_today_date import get_today_date
+from src.organizer.first_launch import first_launch
 
 
 # TODO: Изучить и описать эту функцию
@@ -32,6 +33,7 @@ def kill_new_wb(process_new_wb, wb_title, path_to_db):
 if __name__ == '__main__':
 
     # Запуск защитных модулей, скриптов и проверок ...
+    # TODO
     pass
 
     #   Определить текущее название для файла Day исходя из текущей даты
@@ -40,9 +42,10 @@ if __name__ == '__main__':
     path_d_future: str = path_to_future + '\\' + name_day
     path_d_now: str = path_to_now + '\\' + name_day
 
-    # Перемещаем старые расписания в папку history. Перемещаем расписание
-    #     на сегодня из now в папку future. Проверяем, нужно ли включить режим
-    #     ограниченной функциональности.
+    # Перемещаем старые расписания в папку history. Перемещаем расписание на сегодня из now в папку future. Функция автоматически не станет запускаться, если уже запускалась сегодня (в нее встроена проверка).
+    first_launch(path_to_history=path_to_history, path_to_now=path_to_now, path_d_future=path_d_future, path_d_now=path_d_now)
+
+    # Проверяем, нужно ли включить режим ограниченной функциональности, если да - включаем его.
     pass
 
     # Получить id_days из БД табл. days на основе сегодняшней даты

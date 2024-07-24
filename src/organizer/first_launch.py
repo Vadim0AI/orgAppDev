@@ -6,10 +6,8 @@ from src.organizer.links import path_to_db
 from datetime import datetime
 
 
-# TODO: !!! В процессе изменения функции
-
-def first_launch(path_to_history, path_to_now, path_to_future,
-                 path_d_future, path_d_now, name_day):
+def first_launch(path_to_history: str, path_to_now: str,
+                 path_d_future: str, path_d_now: str):
     """ Перемещает старые расписания в папку history. Перемещает расписание
     на сегодня из now в папку future. """
 
