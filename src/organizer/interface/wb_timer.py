@@ -202,18 +202,20 @@ class CountdownTimer(tk.Tk):
                 today_date = datetime.now()
                 # Форматируем дату в нужный формат 'dd.mm.yy'
                 today_date = today_date.strftime('%d.%m.%y')
-
+                
                 # TODO: Вот здесь как раз и определяется факт режима
                 #  ограниченной функциональности и соответственно должна быть
                 #  проверка на то, что в расписании НЕ добавлены РБ с
                 #  настройкой, запрещающей это делать
+
+
                 day_from_db: tuple = get_days_from_db(today_date, 'last')
                 if len(day_from_db) == 0:
                     id_day = 1
                 else:
                     id_day = day_from_db[0]
 
-                # Извлекаем old_sheduleв виде списка кортежей, а all_wb
+                # Извлекаем old_shedule в виде списка кортежей, а all_wb
                 #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
                 old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
                                                       where_condition=f'id_days = {id_day}', order_by='number')
@@ -236,7 +238,6 @@ class CountdownTimer(tk.Tk):
                 # Сначала получаем сегодняшнюю дату
                 date_today = datetime.now()
                 # Форматируем дату в нужный формат
-                # TODO: Может r поставить r'%d.%m.%y'?
                 date_today = date_today.strftime('%d.%m.%y')
                 # TODO: !!! Учесть first_launch !!!
                 # Сохраняем в БД

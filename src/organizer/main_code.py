@@ -11,6 +11,7 @@ from src.organizer.links import *
 from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_today_date import get_today_date
 from src.organizer.first_launch import first_launch
+from src.organizer.limited_mode import LimitedMode
 
 
 # TODO: Изучить и описать эту функцию
@@ -46,6 +47,10 @@ if __name__ == '__main__':
     first_launch(path_to_history=path_to_history, path_to_now=path_to_now, path_d_future=path_d_future, path_d_now=path_d_now)
 
     # Проверяем, нужно ли включить режим ограниченной функциональности, если да - включаем его.
+    limit_mode_obj = LimitedMode()
+    limit_mode_obj.get_status()
+    limit_mode_obj.status
+    # TODO
     pass
 
     # Получить id_days из БД табл. days на основе сегодняшней даты

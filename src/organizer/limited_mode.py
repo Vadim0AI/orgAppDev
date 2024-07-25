@@ -4,6 +4,7 @@ from datetime import date
 from src.db_querys.get.get_days_from_db import get_days_from_db
 import sqlite3
 
+
 class LimitedMode:
     """ 
     self.status может принимать следующие значения:
@@ -23,7 +24,7 @@ class LimitedMode:
         date_for_query (str) - дата по которой мы возьмем расписания и проверим статус limited_status.
 
         Алгоритм работы: 
-        Обратиться к БД и получить список кортежей day за сегодня по значению limited_status, превратить его просто в список. Если в этом списке есть 'no limited' - то соответственно такой и статус, также и с 'no leisure', если ничего из этого нет, а есть только 'indefinite' или 'only shedule' - то 'only shedule'.
+        Обратиться к БД и получить список кортежей day за сегодня по значению limited_status, превратить его просто в список. Если в этом списке есть 'no limited' - то соответственно такой и статус, также и с 'no leisure', если ничего из этого нет, а есть только 'indefinite' или 'only shedule' - или вообще нет никаого расписания, то 'only shedule'. 
 
         Returns:
         limited_status (str) - статус режима ограниченной функциональности см. db_install.
@@ -36,13 +37,20 @@ class LimitedMode:
             # Форматирование даты в dd.mm.yy
             date_for_query = date.strftime("%d.%m.%y")
 
-        # Поучаем из БД
+        # Получаем из БД
         where_query = f'date = {date}'
         status_lst_one: list = extract_db(select_column='limited_status', path_db=path_to_db, table_name='days', where_condition=where_query)
+
+        # Если полученный список status_lst_one пустой - значит нет ни одного расписания на сегодня, тогда статус = 'only shedule'
+        if len(status_lst_one) == 0:
+            self.status = 'only shedule'
+            return 'only shedule'
+
         # Превращаем список кортежей в список
         status_lst_two: list = []
         for tpl in status_lst_one:
             status_lst_two.append(tpl[0])
+            
         # Выполняем проверки и выводим результат
         if 'no limited' in status_lst_two:
             self.status = 'no limited'
@@ -56,7 +64,7 @@ class LimitedMode:
 
 
     def set_status(self, limited_status: str) -> None:
-        """ Обращаемся к БД days и записываем в limited_status указанный в параметрах статус для последнего расписания на день 
+        """ Обращаемся к БД days и записываем в limited_status указанный в параметрах статус для последнего расписания на день.
         
         Параметры:
         limited_status (str) - статус режима ограниченной функциональности см. db_install.
