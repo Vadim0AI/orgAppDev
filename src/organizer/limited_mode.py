@@ -1,7 +1,8 @@
 from src.db_querys.get.extract_db import extract_db
 from src.organizer.links import path_to_db
 from datetime import date
-
+from src.db_querys.get.get_days_from_db import get_days_from_db
+import sqlite3
 
 class LimitedMode:
     """ 
@@ -16,8 +17,8 @@ class LimitedMode:
         self.status: str = 'indefinite'
 
 
-    def get_status(self, date_for_query: str = 'today'):
-        """ Возвращает статус limited_status на основе БД days 
+    def get_status(self, date_for_query: str = 'today') -> str:
+        """ Возвращает статус limited_status на основе БД days, также изменяет значение преременной self.status
         
         date_for_query (str) - дата по которой мы возьмем расписания и проверим статус limited_status.
 
@@ -54,8 +55,29 @@ class LimitedMode:
             return 'only shedule'
 
 
-    def set_status(self):
-        # Обращаемся к БД days и записываем в limited_status указанный в параметрах статус для последнего расписания на день
-        pass
+    def set_status(self, limited_status: str) -> None:
+        """ Обращаемся к БД days и записываем в limited_status указанный в параметрах статус для последнего расписания на день 
+        
+        Параметры:
+        limited_status (str) - статус режима ограниченной функциональности см. db_install.
+        
+        """
+
+        # Получение сегодняшней даты
+        today_date = date.today()
+        # Форматирование даты в dd.mm.yy
+        today_date = today_date.strftime('%d.%m.%y')
+
+        lst_tpl = get_days_from_db(date=today_date, version='last')
+        id_days = lst_tpl[0][0]
+        
+        # Изменяем limited_status
+        with sqlite3.connect(path_to_db) as conn:
+            cursor = conn.cursor()
+            # SQL-запрос для изменения значения поля age
+            update_query = f"UPDATE days SET age = ? WHERE id_days = ?"
+            cursor.execute(update_query, (limited_status, id_days))
+            # Подтверждение изменений
+            conn.commit()
 
 
