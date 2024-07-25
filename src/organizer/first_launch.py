@@ -9,7 +9,7 @@ from datetime import datetime
 def first_launch(path_to_history: str, path_to_now: str,
                  path_d_future: str, path_d_now: str):
     """ Перемещает старые расписания в папку history. Перемещает расписание
-    на сегодня из now в папку future. """
+    на сегодня из now в папку future. Функция автоматически не станет запускаться, если уже запускалась сегодня (в нее встроена проверка). """
 
     # Проверяем, был ли выполнен first_launch ранее за сегодня, если да - пропускаем выполненеие функции.
     today_dd_mm_yy = datetime.today()

@@ -21,6 +21,8 @@ from src.shared.xlsx_utils.parse_table import parse_table
 from src.db_querys.get.extract_db import extract_db
 from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
+from src.organizer.limited_mode import LimitedMode
+
 
 
 class CountdownTimer(tk.Tk):
@@ -202,7 +204,7 @@ class CountdownTimer(tk.Tk):
                 today_date = datetime.now()
                 # Форматируем дату в нужный формат 'dd.mm.yy'
                 today_date = today_date.strftime('%d.%m.%y')
-                
+
                 # TODO: Вот здесь как раз и определяется факт режима
                 #  ограниченной функциональности и соответственно должна быть
                 #  проверка на то, что в расписании НЕ добавлены РБ с
@@ -239,11 +241,25 @@ class CountdownTimer(tk.Tk):
                 date_today = datetime.now()
                 # Форматируем дату в нужный формат
                 date_today = date_today.strftime('%d.%m.%y')
-                # TODO: !!! Учесть first_launch !!!
+
+                # Получаем текущий limited_status
+                limit_mode_obj = LimitedMode()
+                limit_mode_obj.get_status()
+                cur_lim_status = limit_mode_obj.status
+
+                # TODO: Учесть, что список с расписаниями на день может быть пустым и это может привести к ошибкам !
+
+                # Устанавливаем limited_status для нового расписания на основе cur_lim_status (текущего статуса). 
+                if cur_lim_status == 'no limited':
+                    limited_status = 'no limited'
+                elif cur_lim_status == 'only shedule' or cur_lim_status == 'no leisure':
+                    limited_status = 'no leisure'
+
                 # Сохраняем в БД
                 add_day_schedule(date=date_today,
                                  path_schedule=path_d_now,
-                                 limited_status='indefinite', first_launch=0)
+                                 limited_status=limited_status, first_launch=1)
+                # first_launch=1 т.к.если мы составляем план сегодня план на день на сегодня, то first_launch уже должен был произойти.
 
             # Создаем экземпляр класса для показа уведомления
             notif = ToastNotifier()

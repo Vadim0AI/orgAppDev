@@ -27,7 +27,7 @@ class LimitedMode:
         Обратиться к БД и получить список кортежей day за сегодня по значению limited_status, превратить его просто в список. Если в этом списке есть 'no limited' - то соответственно такой и статус, также и с 'no leisure', если ничего из этого нет, а есть только 'indefinite' или 'only shedule' - или вообще нет никаого расписания, то 'only shedule'. 
 
         Returns:
-        limited_status (str) - статус режима ограниченной функциональности см. db_install.
+        limited_status (str) - статус режима ограниченной функциональности см. db_install. Вернет либо 'only shedule', либо 'no leisure', либо 'no limited'.
         
         """
 
@@ -50,7 +50,7 @@ class LimitedMode:
         status_lst_two: list = []
         for tpl in status_lst_one:
             status_lst_two.append(tpl[0])
-            
+
         # Выполняем проверки и выводим результат
         if 'no limited' in status_lst_two:
             self.status = 'no limited'
