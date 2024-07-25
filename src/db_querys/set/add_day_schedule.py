@@ -4,17 +4,15 @@ from src.db_querys.set.add_db_days import add_db_days
 import datetime
 
 
-def add_day_schedule(date: str, path_schedule: str, enough_time: bool = False,
-                     first_launch: bool = False):
+def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indefinite', first_launch: int = 0):
     """ Добавляет новое расписание в таблицы БД days и day_wb. Функция сама
     определяет id и version нового добавляемого расписания (увеличивая их на 1)
 
     date (str) - дата по которой нужно добавить расписание в формате
         'dd.mm.yy'.
     path_schedule (str) - путь к excel файлу с расписанием.
-    enough_time (bool) - достаточно ли времени было затрачено на составление
-        расписания?
-    first_launch (bool) - это первый запуск orgApp за день? - тогда True.
+    limited_status (str) - статус режима ограниченной функциональности см. подробнее в модуле db_install.
+    first_launch (int) - это первый запуск orgApp за день? - тогда 1.
         Это нужно, чтобы выполнять одноразовые предварительные действия при
         первом запуске orgApp за день. Если за день есть хотя бы в одной
         записи True по этому полю, то предварительные действия больше делать не
@@ -35,7 +33,7 @@ def add_day_schedule(date: str, path_schedule: str, enough_time: bool = False,
         id_days = days_db_list[0]
         version = days_db_list[2]
     # Добавляем новое расписание в БД, табл. days
-    add_db_days(date, version, time_change, enough_time, first_launch)
+    add_db_days(date, version, time_change, limited_status, first_launch)
     # Добавляем новое расписание в БД, табл. day_wb
     loading_schedule(id_days, path_schedule)
 

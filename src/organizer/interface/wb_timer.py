@@ -242,7 +242,7 @@ class CountdownTimer(tk.Tk):
                 # Сохраняем в БД
                 add_day_schedule(date=date_today,
                                  path_schedule=path_d_now,
-                                 enough_time=True, first_launch=False)
+                                 limited_status='indefinite', first_launch=0)
 
             # Создаем экземпляр класса для показа уведомления
             notif = ToastNotifier()
@@ -255,6 +255,7 @@ class CountdownTimer(tk.Tk):
             )
 
             # TODO: !!! Перезагружаем orgApp под новое расписание
+            # Выполняем действия first_launch ?
             pass
 
         else:
@@ -306,7 +307,7 @@ class CountdownTimer(tk.Tk):
                 # Сохраняем в БД
                 add_day_schedule(date=date_tomorrow,
                                  path_schedule=path_d_future,
-                                 enough_time=True, first_launch=False)
+                                 limited_status='no limited', first_launch=0)
 
             # Создаем экземпляр класса для показа уведомления
             # TODO: В одном приложении используются разные библиотеки для

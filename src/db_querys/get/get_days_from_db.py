@@ -4,7 +4,7 @@ from src.organizer.links import path_to_db
 
 def get_days_from_db(date: str, version: str = 'last') -> tuple:
     """
-    Позволяет получить кортеж c записью из БД days по
+    Позволяет получить список с кортежем c записью из БД days по
     дате и версии.
 
     date (str) - дата по которой получить расписание в формате
