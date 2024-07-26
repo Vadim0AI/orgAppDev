@@ -49,8 +49,12 @@ if __name__ == '__main__':
     # Проверяем, нужно ли включить режим ограниченной функциональности, если да - включаем его.
     limit_mode_obj = LimitedMode()
     limit_mode_obj.get_status()
-    limit_mode_obj.status
+    lim_mode_status = limit_mode_obj.status
+    if lim_mode_status == 'only shedule':
+        pass
+        # Здесь нужно будет запустить blocked, а также таймер с 'title' - 'today shedule' до времени sleep по умолчанию, например до 21:00.
     # TODO
+    # TODO: Если расписания на сегодня пока нет, то нужно активировать соответсвующий blocked  и вообще сам скрипт будет по другому далее выглядеть т.к. нет title и т.п.
     pass
 
     # Получить id_days из БД табл. days на основе сегодняшней даты
