@@ -22,7 +22,7 @@ from src.db_querys.get.extract_db import extract_db
 from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
 from src.organizer.limited_mode import LimitedMode
-
+from src.organizer.checking_schedule.day.lim_mode_check import lim_mode_check
 
 
 class CountdownTimer(tk.Tk):
@@ -192,7 +192,7 @@ class CountdownTimer(tk.Tk):
             if len(new_shedule) != 0:
 
                 # Выполняем базовую проверку новой версии файла
-                check_result_one = base_check(template_path=path_day_temp,
+                check_result = base_check(template_path=path_day_temp,
                                           day_path=path_d_now,
                                           sheet_name='detailed',
                                           start_orgapp='4:00',
@@ -200,40 +200,58 @@ class CountdownTimer(tk.Tk):
                                           planning_dur='00:10',
                                           path_db=path_to_db, wb_table_name='wb')
 
-                # Получаем текущую дату
-                today_date = datetime.now()
-                # Форматируем дату в нужный формат 'dd.mm.yy'
-                today_date = today_date.strftime('%d.%m.%y')
+                if check_result[0]:
+                    # --- <<< Получаем данные для более глубокой проверки расписания ...
 
-                # TODO: Вот здесь как раз и определяется факт режима
-                #  ограниченной функциональности и соответственно должна быть
-                #  проверка на то, что в расписании НЕ добавлены РБ с
-                #  настройкой, запрещающей это делать
+                    # Получаем текущую дату
+                    today_date = datetime.now()
+                    # Форматируем дату в нужный формат 'dd.mm.yy'
+                    today_date = today_date.strftime('%d.%m.%y')
 
+                    # Получаем id_day
+                    day_from_db: tuple = get_days_from_db(today_date, 'last')
+                    if len(day_from_db) == 0:
+                        id_day = 1
+                    else:
+                        id_day = day_from_db[0]
 
-                day_from_db: tuple = get_days_from_db(today_date, 'last')
-                if len(day_from_db) == 0:
-                    id_day = 1
-                else:
-                    id_day = day_from_db[0]
+                    # Извлекаем old_shedule в виде списка кортежей, а all_wb
+                    #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
+                    old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
+                                                        where_condition=f'id_days = {id_day}', order_by='number')
+    
+                    all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
+                    all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
+                    # ... Получили данные для более глубокой проверки расписания >>> ---
+                    
+                    # Проверяем - есть ли в расписании запрещенные в режиме ограниченной функциональности РБ. Если True - то расписание прошло проверку, в нем нет запрещенных РБ. Иначе False.
+                        ## Получаем lim_status - включен ли режим ограниченной функциональности, и если да, то в каком режиме.
+                    limit_mode_obj = LimitedMode()
+                    limit_mode_obj.get_status()
+                    lim_status: str = limit_mode_obj.status
+                        # Сама проверка
+                    if lim_mode_check(shedule=new_shedule, all_wb=all_wb):
+                        check_result[0] = True
+                    else:
+                        check_result[0] = False
+                        check_result[1] = 'Удалите РБ запрещенные режимом ограниченной функциональности!'
 
-                # Извлекаем old_shedule в виде списка кортежей, а all_wb
-                #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
-                old_shedule: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='day_wb',
-                                                      where_condition=f'id_days = {id_day}', order_by='number')
- 
-                all_wb: list[tuple] = extract_db(select_column='*', path_db=path_to_db, table_name='wb')
-                all_wb: dict[tuple] = get_dct_from_list_tuple(all_wb, 2)
+                    # Если предудущие проверки прошли - выполняем слудующую (длительнсть и сдвиги).
+                    if check_result[0]:
+                        # Проверяем, что до этого было расписание на день (старое расписание не пустое). Если вдруг это первое расписание на день, тогда не с чем будет сравнивать в dur_shift_check().
+                        if len(old_shedule) != 0:
+                            # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания.
+                            check_result = dur_shift_check(old_shedule=old_shedule, new_shedule=new_shedule, all_wb=all_wb)
+                        else:
+                            check_result[0] = True
 
-                # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания
-                check_result_two = dur_shift_check(old_shedule=old_shedule, new_shedule=new_shedule, all_wb=all_wb)
-
-                # Получаем результат с учетом обоих проверок
-                check_result[0] = check_result_one[0] and check_result_two[0]
-                check_result[1] = check_result_one[1] + '\n' + check_result_two[2]
             else:
                 check_result[0] = False
                 check_result[1] = 'Новое расписание пустое!'
+            
+            # После прохождения всех проверок, если True, то выводим сообщение об успешной проверке расписания.
+            if check_result[0]:
+                check_result[1] = 'Расписание сохранено.'
 
             # Если все "ок" - сохраняем новую версию файла в БД;
             if check_result[0]:
@@ -246,8 +264,6 @@ class CountdownTimer(tk.Tk):
                 limit_mode_obj = LimitedMode()
                 limit_mode_obj.get_status()
                 cur_lim_status = limit_mode_obj.status
-
-                # TODO: Учесть, что список с расписаниями на день может быть пустым и это может привести к ошибкам !
 
                 # Устанавливаем limited_status для нового расписания на основе cur_lim_status (текущего статуса). 
                 if cur_lim_status == 'no limited':

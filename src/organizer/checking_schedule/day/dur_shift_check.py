@@ -7,7 +7,7 @@ from src.shared.filtering_list_tpl import filtering_list_tpl
 from datetime import time, datetime
 from src.shared.manipulate_str_time import manipulate_str_time
 
-# TODO: Получеть dict[tuple] можно при помощи get_dct_from_list_tuple()
+
 # TODO: Пока функция get_wb_settings_dct() просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
 
 
@@ -28,7 +28,7 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
     all_wb (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
     
     Returns:
-    check_result (bool): Результат проверки
+    check_result list[bool, str]: Результат проверки: [True/False, 'Текст для уведомления о результатах проверки']
     """
 
     # Получаем словари уникальных РБ для старого и нового расписаний. В значениях по ключу содержится (dur_uniq_wb, count_uniq_wb)
@@ -122,4 +122,4 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
                 moving_duration = manipulate_str_time(moving_duration, new_dur_inside, '-')
                 moving_duration = manipulate_str_time(moving_duration, old_interval_wb[old_wb_index][6], '+')
 
-    return [True, 'Проверка на длительность и сдвиги успешно пройдена!']   # Если все ок - возвращаем True.      
+    return [True, '']   # Если все ок - возвращаем True.      

@@ -2,7 +2,6 @@ from src.organizer.links import path_to_db
 from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
 from src.organizer.get_wb_settings_dct import get_wb_settings_dct
 
-# TODO
 
 def lim_mode_check(shedule: list, all_wb: list) -> bool:
     '''

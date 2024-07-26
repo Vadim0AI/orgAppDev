@@ -98,7 +98,7 @@ def base_check(template_path: str, day_path: str, sheet_name: str,
         check_result[1] = 'Расписание содержит ошибки:\n' + check_result[1]
 
     if check_result[0]:
-        check_result = [True, 'Расписание прошло проверку - все ок']
+        check_result = [True, '']
 
     return check_result
 
