@@ -25,6 +25,7 @@ def day_ab_to_wb(day_ab: list) -> list:
             start_time = ab[0]
             wb = [start_time, last_task, ab[2], ab[3]]
             day_wb.append(wb)
+    del day_wb[len(day_wb)-1]
     return day_wb
 
 

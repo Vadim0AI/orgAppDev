@@ -54,13 +54,14 @@ def base_check(template_path: str, day_path: str, sheet_name: str,
         check_result[0] = False
         check_result[1] = check_result[1] + ('2. Либо первый блок не "start '
                                              'day", либо он не раньше '
-                                             'start_time\n')
+                                             f'{start_orgapp}\n')
 
     # Последний блок - 'sleep' и он не позднее 23:00
     if not end_day_check(day_wb, sleep_time):
         check_result[0] = False
-        check_result[1] = check_result[1] + ('3. Либо последний блок не '
-                                             'sleep, либо он позднее 23:00\n')
+        check_result[1] = check_result[1] + (f'3. Либо последний блок не '
+                                             f'sleep, либо он позднее {
+                                             sleep_time}\n')
 
     # Проверяем, что нет пустых РБ между началом и концом расписания и все
     #   РБ расписания есть в БД;
@@ -132,7 +133,7 @@ def start_day_check(day_wb: list, start_orgapp: str = '4:00') -> bool:
         return False
 
 
-def end_day_check(day_wb: list, sleep_time: str = '4:00') -> bool:
+def end_day_check(day_wb: list, sleep_time: str = '23:00') -> bool:
     """
         ...
         # TODO: Дописать многострочный комментарий
@@ -143,7 +144,10 @@ def end_day_check(day_wb: list, sleep_time: str = '4:00') -> bool:
     # Преобразовать start_time и first_wb_time в формат datetime для сравнения
     sleep_time = datetime.strptime(sleep_time, "%H:%M")
     last_wb_time = datetime.strptime(day_wb[len(day_wb)-1][1], "%H:%M")
-    # Проверяем, что first_wb_time не раньше start_time
+    print(sleep_time, last_wb_time)
+    print(day_wb[len(day_wb)-1][2])
+    print(day_wb)
+    # Проверяем, что
     if day_wb[len(day_wb)-1][2] == 'sleep' and (last_wb_time < sleep_time):
         return True
     else:

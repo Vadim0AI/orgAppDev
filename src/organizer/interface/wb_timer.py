@@ -198,7 +198,7 @@ class CountdownTimer(tk.Tk):
                                           day_path=path_d_now,
                                           sheet_name='detailed',
                                           start_orgapp='4:00',
-                                          sleep_time='21:30', min_wb=10,
+                                          sleep_time='22:00', min_wb=10,
                                           planning_dur='00:10',
                                           path_db=path_to_db,
                                           wb_table_name='wb')
@@ -218,7 +218,7 @@ class CountdownTimer(tk.Tk):
                     else:
                         id_day = day_from_db[0]
 
-                    # Извлекаем old_sсhedule в виде списка кортежей, а all_wb
+                    # Извлекаем old_schedule в виде списка кортежей, а all_wb
                     #   в виде словаря с кортежами - все в целях дальнейшей проверки нового расписания
                     old_schedule: list[tuple] = extract_db(
                         select_column='*', path_db=path_to_db,
@@ -281,7 +281,7 @@ class CountdownTimer(tk.Tk):
                 # Устанавливаем limited_status для нового расписания на основе cur_lim_status (текущего статуса). 
                 if cur_lim_status == 'no limited':
                     limited_status = 'no limited'
-                elif (cur_lim_status == 'only sсhedule' or cur_lim_status ==
+                elif (cur_lim_status == 'only schedule' or cur_lim_status ==
                       'no leisure'):
                     limited_status = 'no leisure'
 
@@ -340,7 +340,7 @@ class CountdownTimer(tk.Tk):
                                       day_path=path_d_future,
                                       sheet_name='detailed',
                                       start_orgapp='4:00',
-                                      sleep_time='21:30', min_wb=10,
+                                      sleep_time='22:00', min_wb=10,
                                       planning_dur='00:10',
                                       path_db=path_to_db, wb_table_name='wb')
 
