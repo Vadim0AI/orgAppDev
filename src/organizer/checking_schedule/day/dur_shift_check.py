@@ -11,7 +11,7 @@ from src.shared.manipulate_str_time import manipulate_str_time
 # TODO: Пока функция get_wb_settings_dct() просто сравнивает словари - сложные комбинации и пересечения настроек не учитываются.
 
 
-def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: dict[tuple]) -> list[bool, str]:
+def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb: dict[tuple]) -> list[bool, str]:
     """  
     Проверяет РБ для которых в БД табл. wb указаны специальные настройки, ограничивабщие сдвиги и изменение длительности. Если условия длительности и/или сдвигов нарушены - возвращает False.
 
@@ -23,8 +23,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
     В интервале от начала одного РБ этого типа, до начала другого РБ этого типа не должно быть длительности большей, чем длительность первого РБ + свободная длительность предыдущих РБ такого типа.
 
     Parameters:
-    old_shedule (list[tuple]): старое расписание (содержится в БД табл. dat_wb).
-    new_shedule (list[tuple]): новое расписание (до этой проверки содержится пока только в excel и извлекается из него).
+    old_schedule (list[tuple]): старое расписание (содержится в БД табл. dat_wb).
+    new_schedule (list[tuple]): новое расписание (до этой проверки содержится пока только в excel и извлекается из него).
     all_wb (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
     
     Returns:
@@ -32,8 +32,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
     """
 
     # Получаем словари уникальных РБ для старого и нового расписаний. В значениях по ключу содержится (dur_uniq_wb, count_uniq_wb)
-    old_unique_wb = get_unique_wb(old_shedule)
-    new_unique_wb = get_unique_wb(new_shedule)
+    old_unique_wb = get_unique_wb(old_schedule)
+    new_unique_wb = get_unique_wb(new_schedule)
 
     # Это шаблон проверяемой настройки
     template_settings: str = 'shift : fix-right | duraton : low-fix'
@@ -56,8 +56,8 @@ def dur_shift_check(old_shedule: list[tuple], new_shedule: list[tuple], all_wb: 
                 return [False, f'Общая длительность РБ {unique_wb} ({new_unique_wb[unique_wb][0]}) превышает значение в страром расписании ({old_unique_wb[unique_wb][0]})']
 
             # Получаем списки интервалов для одного РБ.
-            old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_shedule, index_filter=3, value_filter=unique_wb[3])
-            new_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=new_shedule, index_filter=3, value_filter=unique_wb[3])
+            old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_schedule, index_filter=3, value_filter=unique_wb[3])
+            new_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=new_schedule, index_filter=3, value_filter=unique_wb[3])
             
             # Длительность РБ которая перемещается в следующий(ие) РБ, если предыдущем интервале старого расписания длительности стало меньше.
             moving_duration: str = '00:00'

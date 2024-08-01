@@ -9,7 +9,7 @@ class LimitedMode:
     """ 
     self.status может принимать следующие значения:
     1. 'indefinite' - неопределенное значение;
-    2. 'only shedule' - расписания на сегодня нет - можно только составлять расписание;
+    2. 'only schedule' - расписания на сегодня нет - можно только составлять расписание;
     3. 'no leisure' - расписание не было составлено заранее на сегодня, его составили сегодня же. Поэтому запрещено добавлять развлекательные РБ и другие подобные.
     4. 'no limited' - никаких ограничений на добавление РБ. Расписание на сегодня было составлено заранее, как минимуум еще вчера.
     """
@@ -24,10 +24,10 @@ class LimitedMode:
         date_for_query (str) - дата по которой мы возьмем расписания и проверим статус limited_status.
 
         Алгоритм работы: 
-        Обратиться к БД и получить список кортежей day за сегодня по значению limited_status, превратить его просто в список. Если в этом списке есть 'no limited' - то соответственно такой и статус, также и с 'no leisure', если ничего из этого нет, а есть только 'indefinite' или 'only shedule' - или вообще нет никаого расписания, то 'only shedule'. 
+        Обратиться к БД и получить список кортежей day за сегодня по значению limited_status, превратить его просто в список. Если в этом списке есть 'no limited' - то соответственно такой и статус, также и с 'no leisure', если ничего из этого нет, а есть только 'indefinite' или 'only schedule' - или вообще нет никаого расписания, то 'only schedule'.
 
         Returns:
-        limited_status (str) - статус режима ограниченной функциональности см. db_install. Вернет либо 'only shedule', либо 'no leisure', либо 'no limited'.
+        limited_status (str) - статус режима ограниченной функциональности см. db_install. Вернет либо 'only schedule', либо 'no leisure', либо 'no limited'.
         
         """
 
@@ -35,16 +35,16 @@ class LimitedMode:
             # Получение сегодняшней даты
             date_for_query = date.today()
             # Форматирование даты в dd.mm.yy
-            date_for_query = date.strftime("%d.%m.%y")
+            date_for_query = date_for_query.strftime("%d.%m.%y")
 
         # Получаем из БД
-        where_query = f'date = {date}'
+        where_query = f'date = {date_for_query}'
         status_lst_one: list = extract_db(select_column='limited_status', path_db=path_to_db, table_name='days', where_condition=where_query)
 
-        # Если полученный список status_lst_one пустой - значит нет ни одного расписания на сегодня, тогда статус = 'only shedule'
+        # Если полученный список status_lst_one пустой - значит нет ни одного расписания на сегодня, тогда статус = 'only schedule'
         if len(status_lst_one) == 0:
-            self.status = 'only shedule'
-            return 'only shedule'
+            self.status = 'only schedule'
+            return 'only schedule'
 
         # Превращаем список кортежей в список
         status_lst_two: list = []
@@ -59,8 +59,8 @@ class LimitedMode:
             self.status = 'no leisure'
             return 'no leisure'
         else:
-            self.status = 'only shedule'
-            return 'only shedule'
+            self.status = 'only schedule'
+            return 'only schedule'
 
 
     def set_status(self, limited_status: str) -> None:

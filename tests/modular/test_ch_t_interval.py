@@ -1,5 +1,5 @@
 from time import struct_time
-from src.experemental.others.shedule.ch_t_interval import ch_t_interval
+from src.experemental.others.schedule.ch_t_interval import ch_t_interval
 
 def test_ch_t_interval_inside():
     now = struct_time((2024, 4, 22, 12, 0, 0, 0, 112, -1))

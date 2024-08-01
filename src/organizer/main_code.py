@@ -50,9 +50,9 @@ if __name__ == '__main__':
     limit_mode_obj = LimitedMode()
     limit_mode_obj.get_status()
     lim_mode_status = limit_mode_obj.status
-    if lim_mode_status == 'only shedule':
+    if lim_mode_status == 'only schedule':
         pass
-        # Здесь нужно будет запустить blocked, а также таймер с 'title' - 'today shedule' до времени sleep по умолчанию, например до 21:00.
+        # Здесь нужно будет запустить blocked, а также таймер с 'title' - 'today schedule' до времени sleep по умолчанию, например до 21:00.
     # TODO
     # TODO: Если расписания на сегодня пока нет, то нужно активировать соответсвующий blocked  и вообще сам скрипт будет по другому далее выглядеть т.к. нет title и т.п.
     pass
