@@ -144,11 +144,9 @@ def end_day_check(day_wb: list, sleep_time: str = '23:00') -> bool:
     # Преобразовать start_time и first_wb_time в формат datetime для сравнения
     sleep_time = datetime.strptime(sleep_time, "%H:%M")
     last_wb_time = datetime.strptime(day_wb[len(day_wb)-1][1], "%H:%M")
-    print(sleep_time, last_wb_time)
-    print(day_wb[len(day_wb)-1][2])
-    print(day_wb)
-    # Проверяем, что
-    if day_wb[len(day_wb)-1][2] == 'sleep' and (last_wb_time < sleep_time):
+    # Проверяем, что последний блок - это sleep и что он не позже sleep_time
+    #   из базовых настроек orgApp
+    if day_wb[len(day_wb)-1][2] == 'sleep' and (last_wb_time <= sleep_time):
         return True
     else:
         return False
@@ -167,7 +165,7 @@ def plan_day_exists(day_wb: list, planning_dur: str) -> bool:
     # Перебираем расписание и проверяем каждый РБ
     for wb in day_wb:
         if (wb[2] == 'plan day' and
-                datetime.strptime(wb[5], "%H:%M") > planning_dur):
+                datetime.strptime(wb[5], "%H:%M") >= planning_dur):
             return True
     return False
 
@@ -181,6 +179,9 @@ def check_wb(day_wb: list, all_wb: list):
     all_wb (list): список с title всех РБ из файла work_blocks.xlsx
     """
     for wb in day_wb:
+        print(wb)
+        print(wb[2]) # !!!
+        print(all_wb)
         if (wb[2] == 0) or (wb[2] not in all_wb):
             return False
     return True

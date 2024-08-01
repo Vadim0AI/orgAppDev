@@ -21,8 +21,8 @@ def parse_wb(db: str, path_wb: str):
         for row in table:
             cursor.execute(
                 '''INSERT INTO wb 
-                (wb_group, title, open, close, blocked) 
-                VALUES (?, ?, ?, ?, ?)''',
+                (wb_group, title, open, close, blocked, settings) 
+                VALUES (?, ?, ?, ?, ?, ?)''',
                 row)
         # Сохраняем изменения
         conn.commit()

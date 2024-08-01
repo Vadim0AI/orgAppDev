@@ -20,8 +20,15 @@ def extract_db(select_column: str, path_db: str, table_name: str, where_conditio
             query += f' WHERE {where_condition}'
         if order_by:
             query += f' ORDER BY {order_by}'
-
+        print(query)
         # Используем курсор для выполнения запроса
         cursor.execute(query)
         result = cursor.fetchall()
         return result
+
+
+if __name__ == '__main__':
+    path_db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'
+    result = extract_db(select_column='title', path_db=path_db,
+                        table_name='wb')
+    print('result:', result)

@@ -38,7 +38,7 @@ class LimitedMode:
             date_for_query = date_for_query.strftime("%d.%m.%y")
 
         # Получаем из БД
-        where_query = f'date = {date_for_query}'
+        where_query = f"date = '{date_for_query}'"
         status_lst_one: list = extract_db(select_column='limited_status', path_db=path_to_db, table_name='days', where_condition=where_query)
 
         # Если полученный список status_lst_one пустой - значит нет ни одного расписания на сегодня, тогда статус = 'only schedule'
