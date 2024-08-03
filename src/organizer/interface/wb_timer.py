@@ -188,7 +188,8 @@ class CountdownTimer(tk.Tk):
 
         # Проверяем, открыт ли уже файл today
         if is_excel_file_open(path_d_now):
-
+            # TODO: !!! Возможно new_schedule нужно преобразовать в
+            #  расписание по РБ а не по атомарным блокам, как сейчас !!!
             new_schedule: list[tuple] = parse_table(path_d_now)
             # Проверяем, что расписание не пустое
             if len(new_schedule) != 0:

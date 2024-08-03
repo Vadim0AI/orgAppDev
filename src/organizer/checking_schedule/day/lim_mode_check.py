@@ -18,10 +18,11 @@ def lim_mode_check(schedule: list, all_wb: dict) -> bool:
     (bool) - Если True - значит проверка пройдена успешно - в расписании нет запрещенных РБ.
     '''
 
-
     # Перебираем РБ (в schedule).
     for work_block in schedule:
         title = work_block[3]
+        if title == 0.0:
+            break
         # По title находим соответсвующий РБ в словаре и получаем его settings.
         settings = all_wb[title][6]
         # Преобразуем settings в словарь.

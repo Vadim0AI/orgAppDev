@@ -66,6 +66,7 @@ if __name__ == '__main__':
     stop_timer: bool = False
     stop_new_wb: bool = False
 
+    # TODO: А что, если расписания нет - как он найдет wb_title и пр.?
     # Производим первый запуск РБ
     process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
 
