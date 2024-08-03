@@ -35,12 +35,13 @@ def only_schedule_mod():
     current_time = now.time()
     # Определение начала и конца интервала
     start_time = datetime.time(4, 0)  # 4:00
+    window_end_time = datetime.time(5, 0)  # 5:00
     end_time = datetime.time(23, 0)  # 23:00
     # Проверка, что текущее время находится в заданном интервале
     if start_time <= current_time <= end_time:
         pass # Все в порядке - ничего не делаем
     else:
-        # Текущее время НЕ находится в интервале от 4:00 до 23:00")
+        # Текущее время НЕ находится в интервале от 4:00 до 23:00
         #   - выключить ПК.
         sleep_pc()
 
@@ -69,8 +70,7 @@ def only_schedule_mod():
     # Создаем и открываем пустое расписание на сегодня.
     obj_timer.today_action()
 
-    # !!! В таблице wb обязательно должен быть РБ 'only schedule mod' -
-    # именно этот РБ отвечает, за то, что будет блокироваться в этом режиме.
+
     # Запуск потока для blocked
     blocked_obj = ThreadBlocked()
     thread_blocked = threading.Thread(target=blocked_obj.org_app_blocked,
@@ -79,14 +79,36 @@ def only_schedule_mod():
 
 
 def countdowning(dur_to_end_day):
+    """ Ведет обратный отсчет времени до конца дня (sleep по умолчанию).
+    Включает блокировку, если текущее время вне окна с 4:00 до 5:00 """
+
+    # Создаем поток для blocked, но пока не запускаем
+    # !!! В таблице wb обязательно должен быть РБ 'only schedule mod' -
+    # именно этот РБ отвечает, за то, что будет блокироваться в этом режиме.
+    blocked_obj = ThreadBlocked()
+    thread_blocked = threading.Thread(target=blocked_obj.org_app_blocked,
+                                      args=(path_to_db, 'only schedule mod'))
+
+    # С 4:0 до 5:00 - окно когда блокировка работать не будет.
+    start_time = datetime.time(4, 0)  # 4:00
+    window_end_time = datetime.time(5, 0)  # 5:00
+
+    blocked_activate = False
+
     while dur_to_end_day > 0:
         dur_to_end_day -= 1
+        if blocked_activate == False:
+            # Получение текущего времени
+            now = datetime.datetime.now()
+            current_time = now.time()
+            # Если текущее время вне окна для изменения orgApp (с 4:00 до 5:00) и
+            # при этом блокировка ранее не была запущена - запускаем блокировку.
+            if not (start_time <= current_time <= window_end_time) and (
+                    blocked_activate == False):
+                thread_blocked.start()
     else:
+        # Как только обратный отсчет закончен - выключаем ПК.
         sleep_pc()
-
-
-
-
 
 
 
