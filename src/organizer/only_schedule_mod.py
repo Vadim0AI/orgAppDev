@@ -110,5 +110,3 @@ def countdowning(dur_to_end_day):
         # Как только обратный отсчет закончен - выключаем ПК.
         sleep_pc()
 
-
-

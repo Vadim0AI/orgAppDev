@@ -12,6 +12,7 @@ from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_today_date import get_today_date
 from src.organizer.first_launch import first_launch
 from src.organizer.limited_mode import LimitedMode
+from src.organizer.only_schedule_mod import only_schedule_mod
 
 
 def kill_new_wb(process_new_wb, blocked_obj) -> None:
@@ -63,11 +64,10 @@ if __name__ == '__main__':
     limit_mode_obj.get_status()
     lim_mode_status = limit_mode_obj.status
     if lim_mode_status == 'only schedule':
-        pass
-        # Здесь нужно будет запустить blocked, а также таймер с 'title' - 'today schedule' до времени sleep по умолчанию, например до 21:00.
-    # TODO
-    # TODO: Если расписания на сегодня пока нет, то нужно активировать соответсвующий blocked  и вообще сам скрипт будет по другому далее выглядеть т.к. нет title и т.п.
-    pass
+        # Активируем режим, когда можно только составить расписание на
+        #    сегодня - больше ничего. Также с 4:00 до 5:00 будет окно,
+        #    когда блокировка не будет включена.
+        only_schedule_mod()
 
     # Получить id_days из БД табл. days на основе сегодняшней даты
     #   возвращает запись по последнему id_days на сегодня
@@ -78,7 +78,6 @@ if __name__ == '__main__':
     stop_timer: bool = False
     stop_new_wb: bool = False
 
-    # TODO: А что, если расписания нет - как он найдет wb_title и пр.?
     # Производим первый запуск РБ
     process_timer_rb, delta_sec, wb_title = run_wb_timer(id_days)
 
