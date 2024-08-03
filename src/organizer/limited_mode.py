@@ -87,5 +87,3 @@ class LimitedMode:
             cursor.execute(update_query, (limited_status, id_days))
             # Подтверждение изменений
             conn.commit()
-
-

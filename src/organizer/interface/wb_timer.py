@@ -1,3 +1,5 @@
+import time
+import subprocess
 import tkinter as tk
 import win32gui
 import win32con
@@ -188,8 +190,6 @@ class CountdownTimer(tk.Tk):
 
         # Проверяем, открыт ли уже файл today
         if is_excel_file_open(path_d_now):
-            # TODO: !!! Возможно new_schedule нужно преобразовать в
-            #  расписание по РБ а не по атомарным блокам, как сейчас !!!
             new_schedule: list[tuple] = parse_table(path_d_now)
             # Проверяем, что расписание не пустое
             if len(new_schedule) != 0:
@@ -302,9 +302,14 @@ class CountdownTimer(tk.Tk):
                 threaded=True
             )
 
-            # TODO: !!! Перезагружаем orgApp под новое расписание
-            # Выполняем действия first_launch ?
-            pass
+            # Перезагружаем ПК для активации нового расписания.
+            # Ждем 5 сек, чтобы было время прочитать уведомление об успешном
+            # составлении расписания, затем будет сообщение о перезагрузке.
+            time.sleep(5)
+            # Команда для перезагрузки с задержкой в 120 секунд
+            command = "shutdown /r /t 120"
+            # Выполнение команды
+            subprocess.run(command, shell=True)
 
         else:
             # Проверяем, есть ли файл с нужным именем в папке now,
@@ -551,6 +556,7 @@ def run_wb(dur_min_sec, wb_title):
 if __name__ == '__main__':
     app = CountdownTimer('10:00', 'development orgApp')
     app.mainloop()
+
 
     # # тестируем сохранение wb в БД
     # db = r'C:\Code\orgApp Dev\resources\db\orgApp.db'

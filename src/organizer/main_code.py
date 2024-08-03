@@ -14,9 +14,19 @@ from src.organizer.first_launch import first_launch
 from src.organizer.limited_mode import LimitedMode
 
 
-# TODO: Изучить и описать эту функцию
-# TODO: Возможно два параметра здесь не нужны, но это не точно - проверить
-def kill_new_wb(process_new_wb, wb_title, path_to_db):
+def kill_new_wb(process_new_wb, blocked_obj) -> None:
+    """ Ведет собственный отдельный отсчет для таймера newWB (для
+    переключения между разными РБ). Записывает дынные в статистику
+    выполнения, в зависимости от того, была ли нажата кнопка 'Далее'.
+    При завершении таймера newWB после нажатия кнопки или при окончании
+    времени его отсчета завершает текущий поток blocked
+
+    process_new_wb (obj) - объект процесса работы таймера newWB из
+    библиотеки multiprocessing.
+
+    blocked_obj (obj) - объект потока с текущим процессом blocked.
+    """
+
     time_to_newWB = 120
     global stop_flag
     while process_new_wb.is_alive():
@@ -29,6 +39,8 @@ def kill_new_wb(process_new_wb, wb_title, path_to_db):
         # TODO: Записать в БД и в таблицу Day, что РБ БЫЛ выполнен (если
         #  была нажата кнопка Next);
         pass
+    # Остановка текущего blocked (по сути это blocked предыдущего РБ).
+    blocked_obj.stop_flag = True
 
 
 if __name__ == '__main__':
@@ -128,8 +140,8 @@ if __name__ == '__main__':
                 if wb_title == 'sleep':
                     sleep_pc()
                 # run permissions: closed, open;
-                open_file_app_dir_url(wb_title, path_to_db)
                 org_app_close(path_to_db, wb_title)
+                open_file_app_dir_url(wb_title, path_to_db)
                 # Остановка предыдущего blocked
                 blocked_obj.stop_flag = True
                 # Запуск нового blocked

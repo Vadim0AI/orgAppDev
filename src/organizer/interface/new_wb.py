@@ -165,5 +165,5 @@ def app_new_wb(dur_min_sec, wb_title):
 
 
 if __name__ == '__main__':
-    app = NewWB('01:10', '12345678901234567')
+    app = NewWB('1:10', '12345678901234567')
     app.mainloop()
