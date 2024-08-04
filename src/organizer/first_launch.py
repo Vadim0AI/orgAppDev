@@ -14,7 +14,7 @@ def first_launch(path_to_history: str, path_to_now: str,
     # Проверяем, был ли выполнен first_launch ранее за сегодня, если да - пропускаем выполненеие функции.
     today_dd_mm_yy = datetime.today()
     today_dd_mm_yy = today_dd_mm_yy.strftime('%d.%m.%y')
-    where_query = f'date = {today_dd_mm_yy}'
+    where_query = f'date = "{today_dd_mm_yy}"'
     first_launch_status: list = []
     # fl_from_db - список кортежей, каждый кортеж с одним значением столбца first_launch извлекаем его из БД days
     fl_from_db: list = extract_db(select_column='first_launch', path_db=path_to_db, table_name='days', where_condition=where_query)

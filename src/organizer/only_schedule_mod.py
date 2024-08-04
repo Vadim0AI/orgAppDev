@@ -1,4 +1,6 @@
 import datetime
+import time
+
 from src.organizer.sleep_pc import sleep_pc
 from src.organizer.interface.wb_timer import CountdownTimer
 import threading
@@ -70,12 +72,8 @@ def only_schedule_mod():
     # Создаем и открываем пустое расписание на сегодня.
     obj_timer.today_action()
 
-
-    # Запуск потока для blocked
-    blocked_obj = ThreadBlocked()
-    thread_blocked = threading.Thread(target=blocked_obj.org_app_blocked,
-                                      args=(path_to_db, 'only schedule mod'))
-    thread_blocked.start()
+    while True:
+        time.sleep(1)
 
 
 def countdowning(dur_to_end_day):
