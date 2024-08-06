@@ -1,6 +1,6 @@
 import sqlite3
 from datetime import datetime
-
+from src.organizer.links import path_to_db
 
 
 def where_now_wb(id_days):
@@ -16,7 +16,7 @@ def where_now_wb(id_days):
 
     # Получить список с текущим расписанием по РБ;
     # -- Подключаемся к базе данных SQLite
-    conn = sqlite3.connect(r'/resources/db/orgApp.db')
+    conn = sqlite3.connect(path_to_db)
     #   Создаем объект курсора
     cursor = conn.cursor()
     # -- Выполняем SQL-запрос для выборки данных
