@@ -18,7 +18,7 @@ import shutil
 from src.db_querys.set.add_day_schedule import add_day_schedule
 from win10toast import ToastNotifier
 from datetime import datetime, timedelta
-from src.organizer.checking_schedule.day.base_check import base_check
+from src.organizer.checking_schedule.day.base_check import base_check, check_wb
 from src.organizer.checking_schedule.day.dur_shift_check import dur_shift_check
 from src.shared.xlsx_utils.parse_table import parse_table
 from src.db_querys.get.extract_db import extract_db
@@ -26,6 +26,7 @@ from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
 from src.organizer.limited_mode import LimitedMode
 from src.organizer.checking_schedule.day.lim_mode_check import lim_mode_check
+from src.db_querys.set.day_ab_to_wb import day_ab_to_wb, calc_duration
 
 
 class CountdownTimer(tk.Tk):
@@ -191,9 +192,29 @@ class CountdownTimer(tk.Tk):
         # Проверяем, открыт ли уже файл today
         if is_excel_file_open(path_d_now):
             new_schedule: list[tuple] = parse_table(path_d_now)
-            # Проверяем, что расписание не пустое
-            if len(new_schedule) != 0:
 
+            # Проверяем, что нет пустых РБ между началом и концом расписания и все
+            #   РБ расписания есть в БД;
+            all_wb_from_db = extract_db(select_column='title', path_db=path_to_db,
+                                        table_name='wb')
+            # Сейчас all_wb_from_db будет списком с кортежами, которые
+            # содержат одиночные значения - нужно превратить его просто в
+            # список значений (потом значение переменной будет пересоздано в
+            # дальнейшем коде)
+            all_wb: list = []
+            for sublist in all_wb_from_db:
+                for item in sublist:
+                    all_wb.append(item)
+            # Парсим таблицу с расписанием в список
+            #   (получаем расписание по РБ);
+            day_wb = day_ab_to_wb(new_schedule)
+            day_wb = calc_duration(day_wb)
+            del day_wb[0]
+
+            schedule_not_empty = check_wb(day_wb, all_wb)
+
+            # Проверяем, что расписание не пустое
+            if schedule_not_empty:
                 # Выполняем базовую проверку новой версии файла
                 check_result = base_check(template_path=path_day_temp,
                                           day_path=path_d_now,
@@ -259,7 +280,8 @@ class CountdownTimer(tk.Tk):
 
             else:
                 check_result[0] = False
-                check_result[1] = 'Новое расписание пустое!'
+                check_result[1] = ('Либо есть пустые РБ между началом и концом '
+                                   'расписания или не все РБ расписания есть в БД')
 
             # После прохождения всех проверок, если True, то выводим сообщение об успешной проверке расписания.
             if check_result[0]:
@@ -292,6 +314,12 @@ class CountdownTimer(tk.Tk):
                                  limited_status=limited_status, first_launch=1)
                 # first_launch=1 т.к.если мы составляем план сегодня план на день на сегодня, то first_launch уже должен был произойти.
 
+                # Перезагружаем ПК для активации нового расписания.
+                # Команда для перезагрузки с задержкой в 120 секунд
+                command = "shutdown /r /t 120"
+                # Выполнение команды
+                subprocess.run(command, shell=True)
+
             # Создаем экземпляр класса для показа уведомления
             notif = ToastNotifier()
             # Выводим уведомление о результате проверки
@@ -301,15 +329,6 @@ class CountdownTimer(tk.Tk):
                 duration=10,
                 threaded=True
             )
-
-            # Перезагружаем ПК для активации нового расписания.
-            # Ждем 5 сек, чтобы было время прочитать уведомление об успешном
-            # составлении расписания, затем будет сообщение о перезагрузке.
-            time.sleep(5)
-            # Команда для перезагрузки с задержкой в 120 секунд
-            command = "shutdown /r /t 120"
-            # Выполнение команды
-            subprocess.run(command, shell=True)
 
         else:
             # Проверяем, есть ли файл с нужным именем в папке now,

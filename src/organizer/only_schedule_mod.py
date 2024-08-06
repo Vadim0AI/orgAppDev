@@ -34,7 +34,8 @@ def only_schedule_mod():
     # -- Проверяем - нужно ли выключить ПК из-за sleep по умолчанию ---
     # Получение текущего времени
     now = datetime.datetime.now()
-    current_time = now.time()
+    # Создание объекта datetime.time с часами и минутами из текущего времени
+    current_time = datetime.time(now.hour, now.minute)
     # Определение начала и конца интервала
     start_time = datetime.time(4, 0)  # 4:00
     window_end_time = datetime.time(5, 0)  # 5:00
@@ -59,7 +60,7 @@ def only_schedule_mod():
     # Время до выключения ПК в секундах.
     dur_to_end_day = (minutes * 60) + seconds
     # В отдельном потоке отсчет времени до выключения ПК, там же и
-    # срабатывает выключение по кончании времени.
+    # срабатывает выключение по окончании времени.
     countdowning_thread = threading.Thread(target=countdowning, args=(
         dur_to_end_day,))
     countdowning_thread.start()
@@ -67,10 +68,11 @@ def only_schedule_mod():
     # --- Запускаем интерфейс таймера ---
     obj_timer = CountdownTimer(time_remaining=f'{minutes}:{seconds}',
                              description='schedule for today')
-    timer_thread = threading.Thread(target=obj_timer.mainloop)
-    timer_thread.start()
     # Создаем и открываем пустое расписание на сегодня.
     obj_timer.today_action()
+    # Запускаем таймер РБ
+    obj_timer.mainloop()
+
 
     while True:
         time.sleep(1)
@@ -95,6 +97,7 @@ def countdowning(dur_to_end_day):
 
     while dur_to_end_day > 0:
         dur_to_end_day -= 1
+        time.sleep(1)
         if blocked_activate == False:
             # Получение текущего времени
             now = datetime.datetime.now()
@@ -104,7 +107,7 @@ def countdowning(dur_to_end_day):
             if not (start_time <= current_time <= window_end_time) and (
                     blocked_activate == False):
                 thread_blocked.start()
+                blocked_activate = True
     else:
         # Как только обратный отсчет закончен - выключаем ПК.
         sleep_pc()
-
