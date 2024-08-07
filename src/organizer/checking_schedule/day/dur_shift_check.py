@@ -24,7 +24,9 @@ def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb
 
     Parameters:
     old_schedule (list[tuple]): старое расписание (содержится в БД табл. dat_wb).
-    new_schedule (list[tuple]): новое расписание (до этой проверки содержится пока только в excel и извлекается из него).
+    new_schedule (list[tuple]): новое расписание (до этой проверки
+    содержится пока только в excel и извлекается из него) При этом это
+    должны быть не АБ а РБ.
     all_wb (dict[tuple]): словарь кортежей из БД табл. wb. (Все рабочие блоки и их настройки).
     
     Returns:

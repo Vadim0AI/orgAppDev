@@ -27,7 +27,7 @@ from src.shared.get_dct_from_list_tuple import get_dct_from_list_tuple
 from src.organizer.limited_mode import LimitedMode
 from src.organizer.checking_schedule.day.lim_mode_check import lim_mode_check
 from src.db_querys.set.day_ab_to_wb import day_ab_to_wb, calc_duration
-
+from src.organizer.sleep_pc import sleep_pc
 
 class CountdownTimer(tk.Tk):
     """
@@ -247,6 +247,11 @@ class CountdownTimer(tk.Tk):
                         table_name='day_wb',
                         where_condition=f'id_days = {id_day}',
                         order_by='number')
+                    # Создаем новый список, где из каждого кортежа удаляется
+                    #   первый элемент (id_days - он нам не нужен для
+                    #   проверки) (здесь задействована конструкция
+                    #   "понимание списков").
+                    old_schedule: list[tuple] = [t[1:] for t in old_schedule]
 
                     all_wb: list[tuple] = extract_db(select_column='*',
                                                      path_db=path_to_db,
@@ -260,7 +265,7 @@ class CountdownTimer(tk.Tk):
                     limit_mode_obj.get_status()
                     lim_status: str = limit_mode_obj.status
                     # Сама проверка
-                    if lim_mode_check(schedule=new_schedule, all_wb=all_wb):
+                    if lim_mode_check(schedule=day_wb, all_wb=all_wb):
                         check_result[0] = True
                     else:
                         check_result[0] = False
@@ -270,11 +275,12 @@ class CountdownTimer(tk.Tk):
                     # Если предудущие проверки прошли - выполняем слудующую (длительнсть и сдвиги).
                     if check_result[0]:
                         # Проверяем, что до этого было расписание на день (старое расписание не пустое). Если вдруг это первое расписание на день, тогда не с чем будет сравнивать в dur_shift_check().
-                        if len(old_schedule) != 0:
+                        if (len(old_schedule) != 0) and (lim_status != 'only '
+                                                                     'schedule'):
                             # Выполняем проверку на сдвиги и длительность РБ для сегодняшнего расписания.
                             check_result = dur_shift_check(
                                 old_schedule=old_schedule,
-                                new_schedule=new_schedule, all_wb=all_wb)
+                                new_schedule=day_wb, all_wb=all_wb)
                         else:
                             check_result[0] = True
 
@@ -314,11 +320,8 @@ class CountdownTimer(tk.Tk):
                                  limited_status=limited_status, first_launch=1)
                 # first_launch=1 т.к.если мы составляем план сегодня план на день на сегодня, то first_launch уже должен был произойти.
 
-                # Перезагружаем ПК для активации нового расписания.
-                # Команда для перезагрузки с задержкой в 120 секунд
-                command = "shutdown /r /t 120"
-                # Выполнение команды
-                subprocess.run(command, shell=True)
+                # Выключаем ПК через 1 мин.
+                sleep_pc()
 
             # Создаем экземпляр класса для показа уведомления
             notif = ToastNotifier()

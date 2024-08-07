@@ -24,9 +24,9 @@ def get_unique_wb(day_wb: list[tuple]) -> dict:
 
     # Пройтись по списку расписания
     for work_block in day_wb:
-        wb_title = work_block[3]
+        wb_title = work_block[2]
         # Получаем длительность текущего РБ в итерации.
-        duration = work_block[6]
+        duration = work_block[5]
 
         # Проверяем, был ли этот РБ уже внесен в unique_wb.
         if wb_title in unique_wb:
