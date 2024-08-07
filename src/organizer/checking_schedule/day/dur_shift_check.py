@@ -65,6 +65,7 @@ def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb
                 if dur_new > dur_old:
                     return [False, f'Общая длительность РБ {unique_wb} ({new_unique_wb[unique_wb][0]}) превышает значение в страром расписании ({old_unique_wb[unique_wb][0]})']
 
+                # TODO: !!! у меня все строки day_wb добалвяются с id_day = 1 !
                 # Получаем списки интервалов для одного РБ.
                 old_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=old_schedule, index_filter=3, value_filter=unique_wb[3])
                 new_interval_wb: list[tuple] = filtering_list_tpl(input_lst_tpl=new_schedule, index_filter=3, value_filter=unique_wb[3])
