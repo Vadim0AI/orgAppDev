@@ -2,7 +2,11 @@ import os
 
 
 def sleep_pc():
-    os.system("shutdown -s -t 60 -f")
+    # TODO: Убрать комментирование после отладки
+    # os.system("shutdown -s -t 60 -f")
+    print('Временно на время отладки отключено выключение ПК. Но сейчас он '
+          'должен '
+          'отключиться')
 
 
 # if __name__ == '__main__':

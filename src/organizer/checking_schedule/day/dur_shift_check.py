@@ -16,9 +16,10 @@ def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb
     Проверяет РБ для которых в БД табл. wb указаны специальные настройки, ограничивабщие сдвиги и изменение длительности. Если условия длительности и/или сдвигов нарушены - возвращает False.
 
     # TODO: !!! Пока реализовано только для настроек 
-    #   'shift : fix-right | duraton : low-fix'
+    #   'shift : fix-right | duration : low-fix'
 
-    'shift : fix-right | duraton : low-fix' - эта настройка означает, что сдвигать РБ можно только дальше по времени (либо не сдвигать), а общее время РБ можно только уменьшать или оставить прежним.
+    'shift : fix-right | duration : low-fix' - эта настройка означает,
+    что сдвигать РБ можно только дальше по времени (либо не сдвигать), а общее время РБ можно только уменьшать или оставить прежним.
 
     В интервале от начала одного РБ этого типа, до начала другого РБ этого типа не должно быть длительности большей, чем длительность первого РБ + свободная длительность предыдущих РБ такого типа.
 
@@ -38,7 +39,7 @@ def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb
     new_unique_wb = get_unique_wb(new_schedule)
 
     # Это шаблон проверяемой настройки
-    template_settings: str = 'shift : fix-right | duraton : low-fix'
+    template_settings: str = 'shift : fix-right | duration : low-fix'
     # Превращаем его в словарь. Где ключ - это тип настройки, а значение - это кортеж с значениями настройки).
     template_settings: dict[tuple] = get_wb_settings_dct(template_settings)
 
@@ -70,10 +71,10 @@ def dur_shift_check(old_schedule: list[tuple], new_schedule: list[tuple], all_wb
 
                 # Длительность РБ которая перемещается в следующий(ие) РБ, если предыдущем интервале старого расписания длительности стало меньше.
                 moving_duration: str = '00:00'
-
+                print('Перед проблемной зоной')
                 # Перебираем интервалы старого расписания
                 for old_wb_index in range(len(old_interval_wb)):
-
+                    print('Проблемная зона')
                     # Сумма длительнсти рабочих блоков нового расписания, которые находятся внутри текущего интервала старого расписания.
                     new_dur_inside: str = '00:00'
 
