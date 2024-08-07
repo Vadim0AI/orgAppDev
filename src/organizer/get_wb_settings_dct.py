@@ -1,6 +1,6 @@
 
 
-def get_wb_settings_dct(setting: str) -> dict:
+def get_wb_settings_dct(setting: str) -> dict[tuple]:
     """ Принимает строку из БД wb, поле settings, парсит ее и превращает в словарь.
     При этом к БД напрямую не обращается.
 
