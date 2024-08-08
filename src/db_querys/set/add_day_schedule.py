@@ -26,12 +26,12 @@ def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indef
     time_change = time_change.strftime('%H:%M:%S %d.%m.%y')
     # Получаем кортеж c записью из БД days по дате, последней версии.
     days_db_list = get_days_from_db(date)
+    # Находим id_days последнего расписания в таблице days.
+    last_id: list = extract_db(select_column='MAX(id_days)',
+                               path_db=path_to_db, table_name='days')
     # Получаем id_days по которому будем
     #   добавлять расписание в таблицу БД day_wb.
     if len(days_db_list) == 0:
-        # Находим id_days последнего расписания в таблице days.
-        last_id: list = extract_db(select_column='MAX(id_days)',
-                               path_db=path_to_db, table_name='days')
         # Если добавляемое расписание - самое первое за все время.
         if last_id[0][0] == None:
             id_days = 1
