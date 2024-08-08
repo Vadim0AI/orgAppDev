@@ -1,6 +1,8 @@
 from src.db_querys.set.loading_schedule import loading_schedule
 from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.db_querys.set.add_db_days import add_db_days
+from src.db_querys.get.extract_db import extract_db
+from src.organizer.links import path_to_db
 import datetime
 
 
@@ -27,8 +29,16 @@ def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indef
     # Получаем id_days по которому будем
     #   добавлять расписание в таблицу БД day_wb.
     if len(days_db_list) == 0:
-        id_days = 1
-        version = 1
+        # Находим id_days последнего расписания в таблице days.
+        last_id: list = extract_db(select_column='MAX(id_days)',
+                               path_db=path_to_db, table_name='days')
+        if len(last_id) == 0:
+            id_days = 1
+            version = 1
+        else:
+            id_days = last_id[0][0]
+            version = 1
+
     else:
         id_days = days_db_list[0] + 1
         version = days_db_list[2] + 1
