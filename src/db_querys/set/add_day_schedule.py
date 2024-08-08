@@ -42,7 +42,7 @@ def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indef
             version = 1
 
     else:
-        id_days = days_db_list[0] + 1
+        id_days = last_id[0][0] + 1
         version = days_db_list[2] + 1
     # Добавляем новое расписание в БД, табл. days
     add_db_days(date, version, time_change, limited_status, first_launch)
