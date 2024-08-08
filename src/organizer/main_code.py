@@ -1,4 +1,5 @@
 import time
+import logging
 from get_name_day import get_name_day
 import threading
 from src.organizer.run_wb_timer import run_wb_timer
@@ -48,7 +49,10 @@ if __name__ == '__main__':
 
     # Запуск защитных модулей, скриптов и проверок ...
     # TODO
-    pass
+    # Запускаем логирование
+    logging.basicConfig(filename=r'C:\Code\orgApp Dev\resources\logs\logs.log',
+                        level=logging.DEBUG, filemode='a')
+    logging.debug('Script started')
 
     #   Определить текущее название для файла Day исходя из текущей даты
     name_day = get_name_day(date='today')
