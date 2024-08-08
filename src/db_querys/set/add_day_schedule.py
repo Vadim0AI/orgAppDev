@@ -32,9 +32,11 @@ def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indef
         # Находим id_days последнего расписания в таблице days.
         last_id: list = extract_db(select_column='MAX(id_days)',
                                path_db=path_to_db, table_name='days')
-        if len(last_id) == 0:
+        # Если добавляемое расписание - самое первое за все время.
+        if last_id[0][0] == None:
             id_days = 1
             version = 1
+        # Если добавляемое расписание самое первое только за сегодня.
         else:
             id_days = last_id[0][0]
             version = 1

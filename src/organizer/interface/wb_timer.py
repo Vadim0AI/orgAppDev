@@ -420,11 +420,7 @@ class CountdownTimer(tk.Tk):
             #   "setting orgApp"
             if (self.description == 'development orgApp' or self.description ==
                     'setting orgApp'):
-                print('Сохранение WB разрешено')
                 # Сохранение WB в БД
-                # TODO: Протестировать - даст ли он сохранить, если excel
-                #  открыт пользователем (вроде должно работать, т.к. по-сути
-                #  просто читает excel)
                 parse_wb(db, wb_excel)
                 notification.notify(
                     title='orgApp',
