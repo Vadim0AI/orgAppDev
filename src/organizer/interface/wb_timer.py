@@ -382,6 +382,7 @@ class CountdownTimer(tk.Tk):
                 add_day_schedule(date=date_tomorrow,
                                  path_schedule=path_d_future,
                                  limited_status='no limited', first_launch=0)
+                check_result[1] = 'Расписание на завтра успешно сохранено'
 
             # Создаем экземпляр класса для показа уведомления
             # TODO: В одном приложении используются разные библиотеки для
