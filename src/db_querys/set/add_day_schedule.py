@@ -38,7 +38,7 @@ def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indef
             version = 1
         # Если добавляемое расписание самое первое только за сегодня.
         else:
-            id_days = last_id[0][0]
+            id_days = last_id[0][0] + 1
             version = 1
 
     else:
