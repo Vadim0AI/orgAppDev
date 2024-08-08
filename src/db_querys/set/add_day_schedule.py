@@ -3,8 +3,7 @@ from src.db_querys.get.get_days_from_db import get_days_from_db
 from src.db_querys.set.add_db_days import add_db_days
 import datetime
 
-# TODO: !!! у меня все строки day_wb добавляются с id_day = 1 вместо
-#  увеличения на +1 !
+
 def add_day_schedule(date: str, path_schedule: str, limited_status: str = 'indefinite', first_launch: int = 0):
     """ Добавляет новое расписание в таблицы БД days и day_wb. Функция сама
     определяет id и version нового добавляемого расписания (увеличивая их на 1)
